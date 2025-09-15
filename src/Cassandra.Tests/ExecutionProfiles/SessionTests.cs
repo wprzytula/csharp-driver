@@ -58,7 +58,7 @@ namespace Cassandra.Tests.ExecutionProfiles
             Mock.Get(clusterMock).Setup(c => c.Configuration).Returns(config);
             Mock.Get(requestHandlerMock).Setup(r => r.SendAsync()).Returns(Task.FromResult(new RowSet()));
 
-            var session = new Session(clusterMock, config, null, serializer, null);
+            var session = new Session(clusterMock, config, null);
 
             Mock.Get(requestHandlerFactoryMock)
                 .Setup(m => m.CreateAsync(session, serializer.GetCurrentSerializer(), It.IsAny<IStatement>(), config.RequestOptions["testE"]))
@@ -104,7 +104,7 @@ namespace Cassandra.Tests.ExecutionProfiles
             Mock.Get(clusterMock).Setup(c => c.Configuration).Returns(config);
             Mock.Get(requestHandlerMock).Setup(r => r.SendAsync()).Returns(Task.FromResult(new RowSet()));
 
-            var session = new Session(clusterMock, config, null, serializer, null);
+            var session = new Session(clusterMock, config, null);
 
             Mock.Get(requestHandlerFactoryMock)
                 .Setup(m => m.CreateAsync(session, serializer.GetCurrentSerializer(), It.IsAny<IStatement>(), config.DefaultRequestOptions))

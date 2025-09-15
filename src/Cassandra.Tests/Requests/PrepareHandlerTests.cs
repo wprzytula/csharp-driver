@@ -506,7 +506,7 @@ namespace Cassandra.Tests.Requests
             factory.CreatedConnections.Clear();
 
             // create session
-            var session = new Session(cluster, config, null, SerializerManager.Default, null);
+            var session = new Session(cluster, config, null);
 
             // create prepare handler
             var prepareHandler = new PrepareHandler(new SerializerManager(ProtocolVersion.V3), cluster, new ReprepareHandler());

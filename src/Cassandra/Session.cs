@@ -35,29 +35,24 @@ using Cassandra.Tasks;
 namespace Cassandra
 {
     /// <inheritdoc cref="ISession" />
-    public class Session : IInternalSession
+    public class Session : ISession, /* FIXME: Reimplement tests and remove this stub: */ IInternalSession
     {
-        private readonly ISerializerManager _serializerManager;
         private static readonly Logger Logger = new Logger(typeof(Session));
-        private readonly IThreadSafeDictionary<IPEndPoint, IHostConnectionPool> _connectionPool;
-        private readonly IInternalCluster _cluster;
+        private readonly ICluster _cluster;
         private int _disposed;
-        private long _initialized;
-        private volatile string _keyspace;
         private readonly IMetricsManager _metricsManager;
         private readonly IObserverFactory _observerFactory;
-        internal IInternalSession InternalRef => this;
 
-        public int BinaryProtocolVersion => (int)_serializerManager.GetCurrentSerializer().ProtocolVersion;
+        internal IInternalSession InternalRef
+        {
+            get { throw new NotImplementedException(); }
+            set { }
+        }
+
+        public int BinaryProtocolVersion => 4;
 
         /// <inheritdoc />
         public ICluster Cluster => _cluster;
-
-        IInternalCluster IInternalSession.InternalCluster => _cluster;
-
-        IMetricsManager IInternalSession.MetricsManager => _metricsManager;
-
-        IObserverFactory IInternalSession.ObserverFactory => _observerFactory;
 
         /// <summary>
         /// Gets the cluster configuration
@@ -72,19 +67,11 @@ namespace Cassandra
         /// <summary>
         /// Gets or sets the keyspace
         /// </summary>
+        private string _keyspace;
         public string Keyspace
         {
-            get => InternalRef.Keyspace;
-            private set => InternalRef.Keyspace = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the keyspace
-        /// </summary>
-        string IInternalSession.Keyspace
-        {
             get => _keyspace;
-            set => _keyspace = value;
+            private set => _keyspace = value;
         }
 
         /// <inheritdoc />
@@ -94,24 +81,14 @@ namespace Cassandra
 
         public Policies Policies => Configuration.Policies;
 
-        /// <inheritdoc />
-        Guid IInternalSession.InternalSessionId { get; } = Guid.NewGuid();
-
         internal Session(
-            IInternalCluster cluster,
+            ICluster cluster,
             Configuration configuration,
-            string keyspace,
-            ISerializerManager serializerManager,
-            string sessionName)
+            string keyspace)
         {
-            _serializerManager = serializerManager;
             _cluster = cluster;
             Configuration = configuration;
             Keyspace = keyspace;
-            SessionName = sessionName;
-            UserDefinedTypes = new UdtMappingDefinitions(this, serializerManager);
-            _connectionPool = new CopyOnWriteDictionary<IPEndPoint, IHostConnectionPool>();
-            _cluster.HostRemoved += OnHostRemoved;
             _metricsManager = new MetricsManager(configuration.MetricsProvider, Configuration.MetricsOptions, Configuration.MetricsEnabled, SessionName);
             _observerFactory = configuration.ObserverFactoryBuilder.Build(_metricsManager);
         }
@@ -139,6 +116,8 @@ namespace Cassandra
         {
             if (Keyspace != keyspace)
             {
+                // FIXME: Migrate to Rust `Session::use_keyspace()`.
+
                 Execute(new SimpleStatement(CqlQueryTools.GetUseKeyspaceCql(keyspace)));
                 Keyspace = keyspace;
             }
@@ -154,6 +133,9 @@ namespace Cassandra
         /// <inheritdoc />
         public void CreateKeyspaceIfNotExists(string keyspaceName, Dictionary<string, string> replication = null, bool durableWrites = true)
         {
+            // Note: This won't work with current Rust error handling, because we always throw RustException on any error,
+            // losing capability to catch specific exceptions like AlreadyExistsException.
+            // FIXME: Design a better error handling mechanism to allow this.
             try
             {
                 CreateKeyspace(keyspaceName, replication, durableWrites);
@@ -173,6 +155,9 @@ namespace Cassandra
         /// <inheritdoc />
         public void DeleteKeyspaceIfExists(string keyspaceName)
         {
+            // Note: This won't work with current Rust error handling, because we always throw RustException on any error,
+            // losing capability to catch specific exceptions like AlreadyExistsException.
+            // FIXME: Design a better error handling mechanism to allow this.
             try
             {
                 DeleteKeyspace(keyspaceName);
@@ -192,81 +177,9 @@ namespace Cassandra
         /// <inheritdoc />
         public Task ShutdownAsync()
         {
-            //Only dispose once
-            if (Interlocked.Increment(ref _disposed) != 1)
-            {
-                return Task.FromResult<object>(null);
-            }
-
-            if (Interlocked.Read(ref _initialized) == 1)
-            {
-                _cluster.RemoveSession(this);
-            }
-
-            _metricsManager?.Dispose();
-
-            _cluster.HostRemoved -= OnHostRemoved;
-
-            var pools = _connectionPool.ToArray();
-            foreach (var pool in pools)
-            {
-                pool.Value.Dispose();
-            }
-
+            // FIXME: Actually perform shutdown.
+            // Remember to dequeue from Cluster's sessions list.
             return Task.FromResult<object>(null);
-        }
-
-        /// <inheritdoc />
-        async Task IInternalSession.Init()
-        {
-            _metricsManager.InitializeMetrics(this);
-
-            if (Configuration.GetOrCreatePoolingOptions(_serializerManager.CurrentProtocolVersion).GetWarmup())
-            {
-                await Warmup().ConfigureAwait(false);
-            }
-
-            if (Keyspace != null)
-            {
-                // Borrow a connection, trying to fail fast
-                var handler = await Configuration.RequestHandlerFactory.CreateAsync(this, _serializerManager.GetCurrentSerializer()).ConfigureAwait(false);
-                await handler.GetNextConnectionAsync(new Dictionary<IPEndPoint, Exception>()).ConfigureAwait(false);
-            }
-
-            Interlocked.Exchange(ref _initialized, 1);
-        }
-
-        /// <summary>
-        /// Creates the required connections on all hosts in the local DC.
-        /// Returns a Task that is marked as completed after all pools were warmed up.
-        /// In case, all the host pool warmup fail, it logs an error.
-        /// </summary>
-        private async Task Warmup()
-        {
-            var hosts = _cluster.AllHosts().Where(h => _cluster.RetrieveAndSetDistance(h) == HostDistance.Local).ToArray();
-            var tasks = new Task[hosts.Length];
-            for (var i = 0; i < hosts.Length; i++)
-            {
-                var host = hosts[i];
-                var pool = InternalRef.GetOrCreateConnectionPool(host, HostDistance.Local);
-                tasks[i] = pool.Warmup();
-            }
-
-            try
-            {
-                await Task.WhenAll(tasks).ConfigureAwait(false);
-            }
-            catch
-            {
-                if (tasks.Any(t => t.Status == TaskStatus.RanToCompletion))
-                {
-                    // At least 1 of the warmup tasks completed
-                    return;
-                }
-
-                // Log and continue as the ControlConnection is connected
-                Session.Logger.Error($"Connection pools for {hosts.Length} host(s) failed to be warmed up");
-            }
         }
 
         /// <inheritdoc />
@@ -332,81 +245,12 @@ namespace Cassandra
         /// <inheritdoc />
         public Task<RowSet> ExecuteAsync(IStatement statement, string executionProfileName)
         {
-            return InternalRef.ExecuteAsync(statement, InternalRef.GetRequestOptions(executionProfileName));
+            // return this.ExecuteAsync(statement, this.GetRequestOptions(executionProfileName));
+            throw new NotImplementedException("ExecuteAsync is not yet implemented"); // FIXME: bridge with Rust execution profiles.
         }
-
-        async Task<RowSet> IInternalSession.ExecuteAsync(IStatement statement, IRequestOptions requestOptions)
-        {
-            var handler = await Configuration.RequestHandlerFactory
-                                .CreateAsync(this, _serializerManager.GetCurrentSerializer(), statement, requestOptions).ConfigureAwait(false);
-            return await handler.SendAsync().ConfigureAwait(false);
-        }
-
-        /// <inheritdoc />
-        IHostConnectionPool IInternalSession.GetOrCreateConnectionPool(Host host, HostDistance distance)
-        {
-            var hostPool = _connectionPool.GetOrAdd(host.Address, address =>
-            {
-                var newPool = Configuration.HostConnectionPoolFactory.Create(
-                    host, Configuration, _serializerManager, _observerFactory, Cluster.Metadata.GetTokenFactory());
-                newPool.AllConnectionClosed += InternalRef.OnAllConnectionClosed;
-                newPool.SetDistance(distance);
-                _metricsManager.GetOrCreateNodeMetrics(host).InitializePoolGauges(newPool);
-                return newPool;
-            });
-            return hostPool;
-        }
-
-        /// <inheritdoc />
-        IEnumerable<KeyValuePair<IPEndPoint, IHostConnectionPool>> IInternalSession.GetPools()
-        {
-            return _connectionPool.Select(kvp => new KeyValuePair<IPEndPoint, IHostConnectionPool>(kvp.Key, kvp.Value));
-        }
-
-        void IInternalSession.OnAllConnectionClosed(Host host, IHostConnectionPool pool)
-        {
-            if (_cluster.AnyOpenConnections(host))
-            {
-                pool.ScheduleReconnection();
-                return;
-            }
-
-            // There isn't any open connection to this host in any of the pools
-            pool.MarkAsDownAndScheduleReconnection();
-        }
-
-        /// <inheritdoc/>
-        int IInternalSession.ConnectedNodes => _connectionPool.Count(kvp => kvp.Value.HasConnections);
-
         public IDriverMetrics GetMetrics()
         {
             return _metricsManager;
-        }
-
-        bool IInternalSession.HasConnections(Host host)
-        {
-            if (_connectionPool.TryGetValue(host.Address, out var pool))
-            {
-                return pool.HasConnections;
-            }
-            return false;
-        }
-
-        /// <inheritdoc />
-        IHostConnectionPool IInternalSession.GetExistingPool(IPEndPoint address)
-        {
-            _connectionPool.TryGetValue(address, out var pool);
-            return pool;
-        }
-
-        void IInternalSession.CheckHealth(Host host, IConnection connection)
-        {
-            if (!_connectionPool.TryGetValue(host.Address, out var pool))
-            {
-                Session.Logger.Error("Internal error: No host connection pool found");
-                return;
-            }
-            pool.CheckHealth(connection);
         }
 
         /// <inheritdoc />
@@ -418,6 +262,7 @@ namespace Cassandra
         /// <inheritdoc />
         public PreparedStatement Prepare(string cqlQuery, IDictionary<string, byte[]> customPayload)
         {
+            // TODO: support custom payload in Rust Driver, then implement this.
             return Prepare(cqlQuery, null, customPayload);
         }
 
@@ -444,6 +289,7 @@ namespace Cassandra
         /// <inheritdoc />
         public Task<PreparedStatement> PrepareAsync(string query, IDictionary<string, byte[]> customPayload)
         {
+            // TODO: support custom payload in Rust Driver, then implement this.
             return PrepareAsync(query, null, customPayload);
         }
 
@@ -454,28 +300,28 @@ namespace Cassandra
         }
 
         /// <inheritdoc />
-        public async Task<PreparedStatement> PrepareAsync(
+        public Task<PreparedStatement> PrepareAsync(
             string cqlQuery, string keyspace, IDictionary<string, byte[]> customPayload)
         {
-            var serializer = _serializerManager.GetCurrentSerializer();
-            var currentVersion = serializer.ProtocolVersion;
-            if (!currentVersion.SupportsKeyspaceInRequest() && keyspace != null)
+            // TODO: support custom payload in Rust Driver, then implement this.
+            if (keyspace != null)
             {
                 // Validate protocol version here and not at PrepareRequest level, as PrepareRequest can be issued
                 // in the background (prepare and retry, prepare on up, ...)
-                throw new NotSupportedException($"Protocol version {currentVersion} does not support" +
+                throw new NotSupportedException($"Protocol version 4 does not support" +
                                                 " setting the keyspace as part of the PREPARE request");
             }
-            var request = new InternalPrepareRequest(serializer, cqlQuery, keyspace, customPayload);
-            return await _cluster.Prepare(this, _serializerManager, request).ConfigureAwait(false);
+            throw new NotImplementedException("PrepareAsync is not yet implemented"); // FIXME: bridge with Rust prepare.
         }
 
         public void WaitForSchemaAgreement(RowSet rs)
         {
+            // Deprecated and implemented as no-op.
         }
 
         public bool WaitForSchemaAgreement(IPEndPoint hostAddress)
         {
+            // Deprecated and implemented as no-op.
             return false;
         }
 
@@ -484,9 +330,9 @@ namespace Cassandra
             return new SimpleStatement(cqlQuery);
         }
 
-        /// <inheritdoc />
-        IRequestOptions IInternalSession.GetRequestOptions(string executionProfileName)
+        private IRequestOptions GetRequestOptions(string executionProfileName)
         {
+            // FIXME: bridge with Rust execution profiles.
             if (!Configuration.RequestOptions.TryGetValue(executionProfileName, out var profile))
             {
                 throw new ArgumentException("The provided execution profile name does not exist. It must be added through the Cluster Builder.");
@@ -495,14 +341,81 @@ namespace Cassandra
             return profile;
         }
 
-        private void OnHostRemoved(Host host)
-        {
-            _metricsManager.RemoveNodeMetrics(host);
-            if (_connectionPool.TryRemove(host.Address, out var pool))
-            {
-                pool.OnHostRemoved();
-                pool.Dispose();
-            }
+        /* BEGIN TESTING-ONLY STUBS */
+        /* FIXME: Reimplement tests and remove these stubs */
+
+        /// <summary>
+        /// Unique Session ID generated by the driver.
+        /// </summary>
+        Guid IInternalSession.InternalSessionId { get; }
+
+        /// <summary>
+        /// Initialize the session
+        /// </summary>
+        Task IInternalSession.Init() {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
         }
+
+        /// <summary>
+        /// Gets or creates the connection pool for a given host
+        /// </summary>
+        IHostConnectionPool IInternalSession.GetOrCreateConnectionPool(Host host, HostDistance distance) {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        /// <summary>
+        /// Gets a snapshot of the connection pools
+        /// </summary>
+        IEnumerable<KeyValuePair<IPEndPoint, IHostConnectionPool>> IInternalSession.GetPools() {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        /// <summary>
+        /// Gets the existing connection pool for this host and session or null when it does not exists
+        /// </summary>
+        IHostConnectionPool IInternalSession.GetExistingPool(IPEndPoint address) {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        void IInternalSession.CheckHealth(Host host, IConnection connection) {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        bool IInternalSession.HasConnections(Host host) {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        void IInternalSession.OnAllConnectionClosed(Host host, IHostConnectionPool pool) {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        /// <summary>
+        /// Gets or sets the keyspace
+        /// </summary>
+        string IInternalSession.Keyspace { get; set; }
+
+        IInternalCluster IInternalSession.InternalCluster { get; }
+
+        /// <summary>
+        /// Fetches the request options that were mapped from the provided execution profile's name.
+        /// </summary>
+        IRequestOptions IInternalSession.GetRequestOptions(string executionProfileName) {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        /// <summary>
+        /// Returns the number of connected nodes.
+        /// </summary>
+        int IInternalSession.ConnectedNodes { get; }
+
+        IMetricsManager IInternalSession.MetricsManager { get; }
+
+        IObserverFactory IInternalSession.ObserverFactory { get; }
+
+        Task<RowSet> IInternalSession.ExecuteAsync(IStatement statement, IRequestOptions requestOptions) {
+            throw new NotImplementedException("STUB: reimplement tests and remove me");
+        }
+
+        /* END TESTING-ONLY STUBS */
     }
 }

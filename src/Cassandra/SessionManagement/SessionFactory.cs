@@ -24,8 +24,8 @@ namespace Cassandra.SessionManagement
         public Task<IInternalSession> CreateSessionAsync(
             IInternalCluster cluster, string keyspace, ISerializerManager serializer, string sessionName)
         {
-            return Task.FromResult(
-                new Session(cluster, cluster.Configuration, keyspace, serializer, sessionName).InternalRef);
+            var session = new Session(cluster, cluster.Configuration, keyspace);
+            return Task.FromResult((IInternalSession)session);
         }
     }
 }

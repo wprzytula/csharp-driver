@@ -279,7 +279,7 @@ namespace Cassandra.Tests.ExecutionProfiles
             cluster.Connect();
 
             // create session
-            var session = new Session(cluster, config, null, SerializerManager.Default, null);
+            var session = new Session(cluster, config, null);
 
             // create request handler
             var options = profile != null
