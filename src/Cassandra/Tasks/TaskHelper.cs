@@ -115,7 +115,7 @@ namespace Cassandra.Tasks
             }
             catch (TimeoutException)
             {
-                manager.GetSessionMetrics().CqlClientTimeouts.Increment();
+                // manager.GetSessionMetrics().CqlClientTimeouts.Increment(); FIXME
                 throw;
             }
         }

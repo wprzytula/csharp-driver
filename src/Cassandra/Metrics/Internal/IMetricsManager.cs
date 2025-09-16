@@ -16,7 +16,6 @@
 
 using System;
 
-using Cassandra.Metrics.Registries;
 using Cassandra.SessionManagement;
 
 namespace Cassandra.Metrics.Internal
@@ -26,13 +25,6 @@ namespace Cassandra.Metrics.Internal
     /// </summary>
     internal interface IMetricsManager : IDriverMetrics, IDisposable
     {
-        ISessionMetrics GetSessionMetrics();
-
-        /// <summary>
-        /// Get the existing node metrics for the provided host or creates them and returns them if they don't exist yet.
-        /// </summary>
-        INodeMetrics GetOrCreateNodeMetrics(Host host);
-
         /// <summary>
         /// Initialize metrics with the provided session.
         /// </summary>
