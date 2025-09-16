@@ -339,7 +339,7 @@ namespace Cassandra
             RequestExecutionFactory = requestExecutionFactory ?? new RequestExecutionFactory();
             ConnectionFactory = connectionFactory ?? null; // FIXME
             ControlConnectionFactory = controlConnectionFactory; // FIXME
-            PrepareHandlerFactory = prepareHandlerFactory ?? new PrepareHandlerFactory();
+            PrepareHandlerFactory = null; // FIXME
 
             RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
             ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);
