@@ -806,7 +806,7 @@ namespace Cassandra.Connections
                         plainTextStream = compressor.Decompress(new WrappedStream(stream, header.BodyLength));
                         plainTextStream.Position = 0;
                     }
-                    response = FrameParser.Parse(new Frame(header, plainTextStream, serializer, resultMetadata));
+                    throw new NotImplementedException();
                 }
                 catch (Exception caughtException)
                 {
