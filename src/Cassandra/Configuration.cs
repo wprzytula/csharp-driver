@@ -316,13 +316,11 @@ namespace Cassandra
             SessionFactory = sessionFactory ?? new SessionFactory();
             RequestOptionsMapper = requestOptionsMapper ?? new RequestOptionsMapper();
             MetadataSyncOptions = metadataSyncOptions?.Clone() ?? new MetadataSyncOptions();
-            DnsResolver = dnsResolver ?? new DnsResolver();
-            MetadataRequestHandler = metadataRequestHandler ?? new MetadataRequestHandler();
-            TopologyRefresherFactory = topologyRefresherFactory ?? new TopologyRefresherFactory();
+            DnsResolver = dnsResolver ?? null; // FIXME
+            MetadataRequestHandler = null; // FIXME
+            TopologyRefresherFactory = null; // FIXME
             SchemaParserFactory = schemaParserFactory ?? new SchemaParserFactory();
-            SupportedOptionsInitializerFactory = supportedOptionsInitializerFactory ?? new SupportedOptionsInitializerFactory();
-            ProtocolVersionNegotiator = protocolVersionNegotiator ?? new ProtocolVersionNegotiator();
-            ServerEventsSubscriber = serverEventsSubscriber ?? new ServerEventsSubscriber();
+            ProtocolVersionNegotiator = null; // FIXME
 
             MetricsOptions = metricsOptions ?? new DriverMetricsOptions();
             MetricsProvider = driverMetricsProvider ?? new NullDriverMetricsProvider();
@@ -337,18 +335,18 @@ namespace Cassandra
                 new RequestTrackerObserverFactoryBuilder(requestTracker));
 
             RequestHandlerFactory = requestHandlerFactory ?? new RequestHandlerFactory();
-            HostConnectionPoolFactory = hostConnectionPoolFactory ?? new HostConnectionPoolFactory();
+            HostConnectionPoolFactory = null; // FIXME
             RequestExecutionFactory = requestExecutionFactory ?? new RequestExecutionFactory();
-            ConnectionFactory = connectionFactory ?? new ConnectionFactory();
-            ControlConnectionFactory = controlConnectionFactory ?? new ControlConnectionFactory();
+            ConnectionFactory = connectionFactory ?? null; // FIXME
+            ControlConnectionFactory = controlConnectionFactory; // FIXME
             PrepareHandlerFactory = prepareHandlerFactory ?? new PrepareHandlerFactory();
 
             RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
             ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);
 
             MonitorReportingOptions = monitorReportingOptions ?? new MonitorReportingOptions();
-            ServerNameResolver = serverNameResolver ?? new ServerNameResolver(ProtocolOptions);
-            EndPointResolver = endPointResolver ?? new EndPointResolver(ServerNameResolver);
+            ServerNameResolver = serverNameResolver ?? null; // FIXME
+            EndPointResolver = endPointResolver ?? null; // FIXME
             ContactPointParser = contactPointParser ?? new ContactPointParser(DnsResolver, ProtocolOptions, ServerNameResolver, KeepContactPointsUnresolved);
 
             // Create the buffer pool with 16KB for small buffers and 256Kb for large buffers.

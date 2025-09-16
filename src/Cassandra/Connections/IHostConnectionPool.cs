@@ -39,8 +39,6 @@ namespace Cassandra.Connections
         /// </summary>
         bool HasConnections { get; }
 
-        event Action<Host, HostConnectionPool> AllConnectionClosed;
-
         /// <summary>
         /// Gets a snapshot of the current state of the pool.
         /// </summary>

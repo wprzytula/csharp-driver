@@ -38,7 +38,7 @@ namespace Cassandra
     {
         private const string SelectSchemaVersionPeers = "SELECT schema_version FROM system.peers";
         private const string SelectSchemaVersionLocal = "SELECT schema_version FROM system.local WHERE key='local'";
-        private static readonly Logger Logger = new Logger(typeof(ControlConnection));
+        private static readonly Logger Logger = new Logger(typeof(Metadata));
         private volatile TokenMap _tokenMap;
         private volatile ConcurrentDictionary<string, KeyspaceMetadata> _keyspaces = new ConcurrentDictionary<string, KeyspaceMetadata>();
         private volatile ISchemaParser _schemaParser;

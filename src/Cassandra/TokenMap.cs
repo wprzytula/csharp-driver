@@ -36,7 +36,7 @@ namespace Cassandra
         private readonly int _numberOfHostsWithTokens;
         private readonly ConcurrentDictionary<string, IReadOnlyDictionary<IToken, ISet<Host>>> _tokenToHostsByKeyspace;
         private readonly ConcurrentDictionary<IReplicationStrategy, IReadOnlyDictionary<IToken, ISet<Host>>> _keyspaceTokensCache;
-        private static readonly Logger Logger = new Logger(typeof(ControlConnection));
+        private static readonly Logger Logger = new Logger(typeof(Metadata));
 
         internal TokenMap(
             TokenFactory factory,
