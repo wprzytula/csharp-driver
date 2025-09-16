@@ -19,9 +19,6 @@ using Cassandra.Responses;
 
 namespace Cassandra.Observers.Abstractions
 {
-    /// <summary>
-    /// Exposes callbacks to handle a couple of events related to <see cref="OperationState"/>.
-    /// </summary>
     internal interface IOperationObserver
     {
         void OnOperationSend(long requestSize, long timestamp);
