@@ -26,7 +26,6 @@ using Cassandra.Connections;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Internal;
-using Cassandra.Observers.Abstractions;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
 using Cassandra.Tasks;
@@ -408,8 +407,6 @@ namespace Cassandra
         int IInternalSession.ConnectedNodes { get; }
 
         IMetricsManager IInternalSession.MetricsManager { get; }
-
-        IObserverFactory IInternalSession.ObserverFactory { get; }
 
         Task<RowSet> IInternalSession.ExecuteAsync(IStatement statement, IRequestOptions requestOptions) {
             throw new NotImplementedException("STUB: reimplement tests and remove me");

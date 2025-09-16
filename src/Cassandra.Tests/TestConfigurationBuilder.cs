@@ -21,8 +21,6 @@ using Cassandra.Connections.Control;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Providers.Null;
-using Cassandra.Observers;
-using Cassandra.Observers.Metrics;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
 

@@ -22,7 +22,6 @@ using System.Threading.Tasks;
 using Cassandra.Connections;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Metrics.Internal;
-using Cassandra.Observers.Abstractions;
 
 namespace Cassandra.SessionManagement
 {
@@ -80,8 +79,6 @@ namespace Cassandra.SessionManagement
         int ConnectedNodes { get; }
 
         IMetricsManager MetricsManager { get; }
-
-        IObserverFactory ObserverFactory { get; }
 
         Task<RowSet> ExecuteAsync(IStatement statement, IRequestOptions requestOptions);
     }
