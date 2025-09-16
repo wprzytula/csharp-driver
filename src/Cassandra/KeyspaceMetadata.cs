@@ -27,12 +27,6 @@ namespace Cassandra
 {
     public class KeyspaceMetadata
     {
-        private readonly ConcurrentDictionary<string, TableMetadata> _tables = new ConcurrentDictionary<string, TableMetadata>();
-        private readonly ConcurrentDictionary<string, MaterializedViewMetadata> _views = new ConcurrentDictionary<string, MaterializedViewMetadata>();
-        private readonly ConcurrentDictionary<Tuple<string, string>, FunctionMetadata> _functions = new ConcurrentDictionary<Tuple<string, string>, FunctionMetadata>();
-        private readonly ConcurrentDictionary<Tuple<string, string>, AggregateMetadata> _aggregates = new ConcurrentDictionary<Tuple<string, string>, AggregateMetadata>();
-        private readonly Metadata _parent;
-
         /// <summary>
         ///  Gets the name of this keyspace.
         /// </summary>
@@ -88,34 +82,7 @@ namespace Cassandra
             string graphEngine,
             bool isVirtual = false)
         {
-            //Can not directly reference to schemaParser as it might change
-            _parent = parent;
-            Name = name;
-            DurableWrites = durableWrites;
-
-            if (strategyClass != null && strategyClass.StartsWith("org.apache.cassandra.locator."))
-            {
-                strategyClass = strategyClass.Replace("org.apache.cassandra.locator.", "");
-            }
-
-            StrategyClass = strategyClass;
-
-            var parsedReplicationOptions = replicationOptions == null
-                ? null
-                : ParseReplicationFactors(replicationOptions);
-
-            Replication = parsedReplicationOptions == null
-                ? null
-                : ConvertReplicationOptionsToLegacy(parsedReplicationOptions);
-
-            ReplicationOptions = replicationOptions;
-            IsVirtual = isVirtual;
-            Strategy =
-                (strategyClass == null || parsedReplicationOptions == null)
-                ? null
-                : replicationStrategyFactory.Create(StrategyClass, parsedReplicationOptions);
-
-            GraphEngine = graphEngine;
+            throw new NotImplementedException("TODO: implement KeyspaceMetadata");
         }
 
         /// <summary>
@@ -126,28 +93,12 @@ namespace Cassandra
         ///  exists, <c>null</c> otherwise.</returns>
         public TableMetadata GetTableMetadata(string tableName)
         {
-            return TaskHelper.WaitToComplete(
-                GetTableMetadataAsync(tableName), _parent.Configuration.DefaultRequestOptions.GetQueryAbortTimeout(2));
+            throw new NotImplementedException("TODO: implement TableMetadata");
         }
 
-        internal async Task<TableMetadata> GetTableMetadataAsync(string tableName)
+        internal Task<TableMetadata> GetTableMetadataAsync(string tableName)
         {
-            if (_tables.TryGetValue(tableName, out var tableMetadata))
-            {
-                //The table metadata is available in local cache
-                return tableMetadata;
-            }
-
-            var table = await _parent.SchemaParser.GetTableAsync(Name, tableName).ConfigureAwait(false);
-
-            if (table == null)
-            {
-                return null;
-            }
-
-            //Cache it
-            _tables.AddOrUpdate(tableName, table, (k, o) => table);
-            return table;
+            throw new NotImplementedException("TODO: implement TableMetadata");
         }
 
         /// <summary>
@@ -158,27 +109,7 @@ namespace Cassandra
         ///  exists, <c>null</c> otherwise.</returns>
         public MaterializedViewMetadata GetMaterializedViewMetadata(string viewName)
         {
-            return TaskHelper.WaitToComplete(
-                GetMaterializedViewMetadataAsync(viewName), _parent.Configuration.DefaultRequestOptions.GetQueryAbortTimeout(2));
-        }
-
-        private async Task<MaterializedViewMetadata> GetMaterializedViewMetadataAsync(string viewName)
-        {
-            if (_views.TryGetValue(viewName, out var v))
-            {
-                //The table metadata is available in local cache
-                return v;
-            }
-
-            var view = await _parent.SchemaParser.GetViewAsync(Name, viewName).ConfigureAwait(false);
-            if (view == null)
-            {
-                return null;
-            }
-
-            //Cache it
-            _views.AddOrUpdate(viewName, view, (k, o) => view);
-            return view;
+            throw new NotImplementedException("TODO: implement MaterializedViewMetadata");
         }
 
         /// <summary>
@@ -186,7 +117,7 @@ namespace Cassandra
         /// </summary>
         internal void ClearTableMetadata(string tableName)
         {
-            _tables.TryRemove(tableName, out _);
+            throw new NotImplementedException("TODO: implement TableMetadata");
         }
 
         /// <summary>
@@ -194,7 +125,7 @@ namespace Cassandra
         /// </summary>
         internal void ClearViewMetadata(string name)
         {
-            _views.TryRemove(name, out _);
+            throw new NotImplementedException("TODO: implement ViewMetadata");
         }
 
         /// <summary>
@@ -202,7 +133,7 @@ namespace Cassandra
         /// </summary>
         internal void ClearFunction(string name, string[] signature)
         {
-            _functions.TryRemove(KeyspaceMetadata.GetFunctionKey(name, signature), out _);
+            throw new NotImplementedException("TODO: implement FunctionMetadata");
         }
 
         /// <summary>
@@ -210,7 +141,7 @@ namespace Cassandra
         /// </summary>
         internal void ClearAggregate(string name, string[] signature)
         {
-            _aggregates.TryRemove(KeyspaceMetadata.GetFunctionKey(name, signature), out _);
+            throw new NotImplementedException("TODO: implement AggregateMetadata");
         }
 
         /// <summary>
@@ -220,8 +151,7 @@ namespace Cassandra
         ///  keyspace.</returns>
         public IEnumerable<TableMetadata> GetTablesMetadata()
         {
-            var tableNames = GetTablesNames();
-            return tableNames.Select(GetTableMetadata);
+            throw new NotImplementedException("TODO: implement TableMetadata");
         }
 
 
@@ -233,7 +163,7 @@ namespace Cassandra
         ///  keyspace tables names.</returns>
         public ICollection<string> GetTablesNames()
         {
-            return TaskHelper.WaitToComplete(_parent.SchemaParser.GetTableNamesAsync(Name));
+            throw new NotImplementedException("TODO: implement KeyspaceMetadata");
         }
 
         /// <summary>
@@ -255,7 +185,6 @@ namespace Cassandra
 
             return sb.ToString();
         }
-
 
         /// <summary>
         ///  Returns a CQL query representing this keyspace. This method returns a single
@@ -287,7 +216,7 @@ namespace Cassandra
         /// </summary>
         internal UdtColumnInfo GetUdtDefinition(string typeName)
         {
-            return TaskHelper.WaitToComplete(GetUdtDefinitionAsync(typeName), _parent.Configuration.DefaultRequestOptions.QueryAbortTimeout);
+            throw new NotImplementedException("TODO: implement UdtMetadata");
         }
 
         /// <summary>
@@ -295,7 +224,7 @@ namespace Cassandra
         /// </summary>
         internal Task<UdtColumnInfo> GetUdtDefinitionAsync(string typeName)
         {
-            return _parent.SchemaParser.GetUdtDefinitionAsync(Name, typeName);
+            throw new NotImplementedException("TODO: implement UdtMetadata");
         }
 
         /// <summary>
@@ -304,32 +233,7 @@ namespace Cassandra
         /// <returns>The function metadata or null if not found.</returns>
         public FunctionMetadata GetFunction(string functionName, string[] signature)
         {
-            return TaskHelper.WaitToComplete(
-                GetFunctionAsync(functionName, signature), _parent.Configuration.DefaultRequestOptions.QueryAbortTimeout);
-        }
-
-        private async Task<FunctionMetadata> GetFunctionAsync(string functionName, string[] signature)
-        {
-            if (signature == null)
-            {
-                signature = new string[0];
-            }
-
-            var key = KeyspaceMetadata.GetFunctionKey(functionName, signature);
-            if (_functions.TryGetValue(key, out var func))
-            {
-                return func;
-            }
-
-            var signatureString = _parent.SchemaParser.ComputeFunctionSignatureString(signature);
-            var f = await _parent.SchemaParser.GetFunctionAsync(Name, functionName, signatureString).ConfigureAwait(false);
-            if (f == null)
-            {
-                return null;
-            }
-
-            _functions.AddOrUpdate(key, f, (k, v) => f);
-            return f;
+            throw new NotImplementedException("TODO: implement FunctionMetadata");
         }
 
         /// <summary>
@@ -338,50 +242,7 @@ namespace Cassandra
         /// <returns>The aggregate metadata or null if not found.</returns>
         public AggregateMetadata GetAggregate(string aggregateName, string[] signature)
         {
-            return TaskHelper.WaitToComplete(
-                GetAggregateAsync(aggregateName, signature), _parent.Configuration.DefaultRequestOptions.QueryAbortTimeout);
-        }
-
-        private async Task<AggregateMetadata> GetAggregateAsync(string aggregateName, string[] signature)
-        {
-            if (signature == null)
-            {
-                signature = new string[0];
-            }
-
-            var key = KeyspaceMetadata.GetFunctionKey(aggregateName, signature);
-            if (_aggregates.TryGetValue(key, out var aggregate))
-            {
-                return aggregate;
-            }
-
-            var signatureString = _parent.SchemaParser.ComputeFunctionSignatureString(signature);
-            var a = await _parent.SchemaParser.GetAggregateAsync(Name, aggregateName, signatureString).ConfigureAwait(false);
-            if (a == null)
-            {
-                return null;
-            }
-
-            _aggregates.AddOrUpdate(key, a, (k, v) => a);
-            return a;
-        }
-
-        private static Tuple<string, string> GetFunctionKey(string name, string[] signature)
-        {
-            return Tuple.Create(name, string.Join(",", signature));
-        }
-
-        /// <summary>
-        /// This is needed in order to avoid breaking the public API (see <see cref="Replication"/>
-        /// </summary>
-        private IDictionary<string, int> ConvertReplicationOptionsToLegacy(IDictionary<string, ReplicationFactor> replicationOptions)
-        {
-            return replicationOptions.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.AllReplicas);
-        }
-
-        private Dictionary<string, ReplicationFactor> ParseReplicationFactors(IDictionary<string, string> replicationOptions)
-        {
-            return replicationOptions.ToDictionary(kvp => kvp.Key, kvp => ReplicationFactor.Parse(kvp.Value));
+            throw new NotImplementedException("TODO: implement AggregateMetadata");
         }
     }
 }
