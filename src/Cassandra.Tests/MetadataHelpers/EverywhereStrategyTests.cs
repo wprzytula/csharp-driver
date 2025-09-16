@@ -14,7 +14,6 @@
 //   limitations under the License.
 //
 
-using Cassandra.MetadataHelpers;
 
 using NUnit.Framework;
 

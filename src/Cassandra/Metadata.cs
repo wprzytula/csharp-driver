@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 using Cassandra.Collections;
 using Cassandra.Connections;
 using Cassandra.Connections.Control;
-using Cassandra.MetadataHelpers;
 using Cassandra.Requests;
 using Cassandra.Tasks;
 
@@ -63,22 +62,13 @@ namespace Cassandra
         /// </summary>
         internal IControlConnection ControlConnection { get; set; }
 
-        internal ISchemaParser SchemaParser { get { throw new NotImplementedException(); } }
-
         internal string Partitioner { get; set; }
 
         internal Hosts Hosts { get; private set; }
 
         internal IReadOnlyDictionary<IContactPoint, IEnumerable<IConnectionEndPoint>> ResolvedContactPoints => throw new NotImplementedException();
 
-        internal IReadOnlyTokenMap TokenToReplicasMap => throw new NotImplementedException();
-
         internal Metadata(Configuration configuration)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Metadata(Configuration configuration, SchemaParser schemaParser) : this(configuration)
         {
             throw new NotImplementedException();
         }

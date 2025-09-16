@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Cassandra.MetadataHelpers;
 using Cassandra.Tasks;
 
 namespace Cassandra
@@ -54,13 +53,6 @@ namespace Cassandra
         public IDictionary<string, int> Replication { get; }
 
         /// <summary>
-        ///  Returns the replication options for this keyspace.
-        /// </summary>
-        /// 
-        /// <returns>a dictionary containing the keyspace replication strategy options.</returns>
-        private IDictionary<string, string> ReplicationOptions { get; }
-
-        /// <summary>
         /// Determines whether the keyspace is a virtual keyspace or not.
         /// </summary>
         public bool IsVirtual { get; }
@@ -70,15 +62,12 @@ namespace Cassandra
         /// </summary>
         public string GraphEngine { get; }
 
-        internal IReplicationStrategy Strategy { get; }
-
         internal KeyspaceMetadata(
             Metadata parent,
             string name,
             bool durableWrites,
             string strategyClass,
             IDictionary<string, string> replicationOptions,
-            IReplicationStrategyFactory replicationStrategyFactory,
             string graphEngine,
             bool isVirtual = false)
         {
@@ -198,14 +187,16 @@ namespace Cassandra
 
             sb.Append("CREATE KEYSPACE ").Append(CqlQueryTools.QuoteIdentifier(Name)).Append(" WITH ");
             sb.Append("REPLICATION = { 'class' : '").Append(StrategyClass).Append("'");
-            foreach (var rep in ReplicationOptions)
+            
+            /* FIXME: reimplement this using Rust wrapper.
+            foreach (var rep in [] ReplicationOptions)
             {
                 if (rep.Key == "class")
                 {
                     continue;
                 }
                 sb.Append(", '").Append(rep.Key).Append("': '").Append(rep.Value).Append("'");
-            }
+            } */
             sb.Append(" } AND DURABLE_WRITES = ").Append(DurableWrites);
             sb.Append(";");
             return sb.ToString();

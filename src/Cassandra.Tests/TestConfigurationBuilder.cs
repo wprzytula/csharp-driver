@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using Cassandra.Connections;
 using Cassandra.Connections.Control;
 using Cassandra.ExecutionProfiles;
-using Cassandra.MetadataHelpers;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Providers.Null;
 using Cassandra.Observers;

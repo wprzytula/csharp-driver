@@ -16,7 +16,6 @@
 
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Cassandra.MetadataHelpers;
 using NUnit.Framework;
 
 namespace Cassandra.Tests

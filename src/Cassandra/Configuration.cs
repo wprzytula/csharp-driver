@@ -22,7 +22,6 @@ using Cassandra.Connections;
 using Cassandra.Connections.Control;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Helpers;
-using Cassandra.MetadataHelpers;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Abstractions;
 using Cassandra.Metrics.Providers.Null;
@@ -131,8 +130,6 @@ namespace Cassandra
         internal IEndPointResolver EndPointResolver { get; }
 
         internal IDnsResolver DnsResolver { get; }
-
-        internal ISchemaParserFactory SchemaParserFactory { get; }
 
         internal IDriverMetricsProvider MetricsProvider { get; }
 
@@ -252,7 +249,6 @@ namespace Cassandra
                                IContactPointParser contactPointParser = null,
                                IServerNameResolver serverNameResolver = null,
                                IDnsResolver dnsResolver = null,
-                               ISchemaParserFactory schemaParserFactory = null,
                                IRequestTracker requestTracker = null)
         {
             AddressTranslator = addressTranslator ?? throw new ArgumentNullException(nameof(addressTranslator));
@@ -274,7 +270,6 @@ namespace Cassandra
             RequestOptionsMapper = requestOptionsMapper ?? new RequestOptionsMapper();
             MetadataSyncOptions = metadataSyncOptions?.Clone() ?? new MetadataSyncOptions();
             DnsResolver = dnsResolver ?? null; // FIXME
-            SchemaParserFactory = schemaParserFactory ?? new SchemaParserFactory();
 
             MetricsOptions = metricsOptions ?? new DriverMetricsOptions();
             MetricsProvider = driverMetricsProvider ?? new NullDriverMetricsProvider();

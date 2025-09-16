@@ -15,7 +15,6 @@
 //
 
 using System.Linq;
-using Cassandra.MetadataHelpers;
 
 using NUnit.Framework;
 
