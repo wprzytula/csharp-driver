@@ -73,8 +73,6 @@ namespace Cassandra
 
         internal IReadOnlyTokenMap TokenToReplicasMap => throw new NotImplementedException();
 
-        internal TabletMap TabletMap { get; private set; }
-
         internal Metadata(Configuration configuration)
         {
             throw new NotImplementedException();
