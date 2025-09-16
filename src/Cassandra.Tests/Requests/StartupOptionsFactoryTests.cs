@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Cassandra.Helpers;
-using Cassandra.Requests;
 using NUnit.Framework;
 
 namespace Cassandra.Tests.Requests

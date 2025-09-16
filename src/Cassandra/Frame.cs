@@ -16,7 +16,6 @@
 
 using System;
 using System.IO;
-using Cassandra.Requests;
 using Cassandra.Serialization;
 
 namespace Cassandra
@@ -37,18 +36,5 @@ namespace Cassandra
         /// Gets the serializer instance to be used for this frame
         /// </summary>
         public ISerializer Serializer { get; }
-
-        /// <summary>
-        /// Metadata to parse the result. Can be null.
-        /// </summary>
-        public ResultMetadata ResultMetadata { get; }
-
-        public Frame(FrameHeader header, Stream body, ISerializer serializer, ResultMetadata resultMetadata)
-        {
-            Header = header ?? throw new ArgumentNullException(nameof(header));
-            Body = body ?? throw new ArgumentNullException(nameof(body));
-            Serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-            ResultMetadata = resultMetadata;
-        }
     }
 }

@@ -19,7 +19,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Cassandra.Collections;
-using Cassandra.Requests;
 using Cassandra.Responses;
 using Cassandra.Serialization;
 
@@ -115,16 +114,6 @@ namespace Cassandra.Connections
         /// <exception cref="SocketException">Throws a SocketException when the connection could not be established with the host</exception>
         /// <exception cref="AuthenticationException" />
         Task<Response> Open(int shardID, int shardCount);
-
-        /// <summary>
-        /// Sends a new request if possible. If it is not possible it queues it up.
-        /// </summary>
-        Task<Response> Send(IRequest request, int timeoutMillis);
-
-        /// <summary>
-        /// Sends a new request if possible with the default timeout. If it is not possible it queues it up.
-        /// </summary>
-        Task<Response> Send(IRequest request);
 
         /// <summary>
         /// Sets the keyspace of the connection.

@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using Cassandra.ExecutionProfiles;
-using Cassandra.Requests;
 using Cassandra.Serialization;
 
 namespace Cassandra

@@ -15,7 +15,6 @@
 //
 
 using System.Collections.Concurrent;
-using Cassandra.Requests;
 
 namespace Cassandra
 {

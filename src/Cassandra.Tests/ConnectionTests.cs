@@ -23,7 +23,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Cassandra.Connections;
 using Cassandra.Observers.Null;
-using Cassandra.Requests;
 using Cassandra.Responses;
 using Cassandra.Serialization;
 using Moq;

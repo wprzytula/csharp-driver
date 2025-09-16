@@ -23,7 +23,6 @@ using Cassandra.Metrics;
 using Cassandra.Metrics.Providers.Null;
 using Cassandra.Observers;
 using Cassandra.Observers.Metrics;
-using Cassandra.Requests;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
 

@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 using Cassandra.Collections;
 using Cassandra.Connections;
 using Cassandra.Connections.Control;
-using Cassandra.Requests;
 using Cassandra.Tasks;
 
 namespace Cassandra

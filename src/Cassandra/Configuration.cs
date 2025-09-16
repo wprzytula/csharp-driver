@@ -25,7 +25,6 @@ using Cassandra.Helpers;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Abstractions;
 using Cassandra.Metrics.Providers.Null;
-using Cassandra.Requests;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
 using Cassandra.Tasks;
@@ -122,10 +121,6 @@ namespace Cassandra
         internal ISessionFactory SessionFactory { get; }
 
         internal IRequestOptionsMapper RequestOptionsMapper { get; }
-
-        internal IRequestHandlerFactory RequestHandlerFactory { get; }
-
-        internal IRequestExecutionFactory RequestExecutionFactory { get; }
 
         internal IEndPointResolver EndPointResolver { get; }
 
@@ -244,8 +239,6 @@ namespace Cassandra
                                bool? allowBetaProtocolVersions,
                                ISessionFactory sessionFactory = null,
                                IRequestOptionsMapper requestOptionsMapper = null,
-                               IRequestHandlerFactory requestHandlerFactory = null,
-                               IRequestExecutionFactory requestExecutionFactory = null,
                                IContactPointParser contactPointParser = null,
                                IServerNameResolver serverNameResolver = null,
                                IDnsResolver dnsResolver = null,
@@ -278,9 +271,6 @@ namespace Cassandra
             TypeSerializers = typeSerializerDefinitions?.Definitions;
             KeepContactPointsUnresolved = keepContactPointsUnresolved ?? false;
             AllowBetaProtocolVersions = allowBetaProtocolVersions ?? false;
-
-            RequestHandlerFactory = null; // FIXME
-            RequestExecutionFactory = null; // FIXME
 
             RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
             ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);
