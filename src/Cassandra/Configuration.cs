@@ -130,21 +130,11 @@ namespace Cassandra
 
         internal IConnectionFactory ConnectionFactory { get; }
 
-        internal IControlConnectionFactory ControlConnectionFactory { get; }
-
         internal IEndPointResolver EndPointResolver { get; }
 
         internal IDnsResolver DnsResolver { get; }
 
-        internal IMetadataRequestHandler MetadataRequestHandler { get; }
-
-        internal ITopologyRefresherFactory TopologyRefresherFactory { get; }
-
         internal ISchemaParserFactory SchemaParserFactory { get; }
-
-        internal ISupportedOptionsInitializerFactory SupportedOptionsInitializerFactory { get; }
-
-        internal IServerEventsSubscriber ServerEventsSubscriber { get; }
 
         internal IDriverMetricsProvider MetricsProvider { get; }
 
@@ -262,15 +252,10 @@ namespace Cassandra
                                IRequestHandlerFactory requestHandlerFactory = null,
                                IRequestExecutionFactory requestExecutionFactory = null,
                                IConnectionFactory connectionFactory = null,
-                               IControlConnectionFactory controlConnectionFactory = null,
                                IContactPointParser contactPointParser = null,
                                IServerNameResolver serverNameResolver = null,
                                IDnsResolver dnsResolver = null,
-                               IMetadataRequestHandler metadataRequestHandler = null,
-                               ITopologyRefresherFactory topologyRefresherFactory = null,
                                ISchemaParserFactory schemaParserFactory = null,
-                               ISupportedOptionsInitializerFactory supportedOptionsInitializerFactory = null,
-                               IServerEventsSubscriber serverEventsSubscriber = null,
                                IRequestTracker requestTracker = null)
         {
             AddressTranslator = addressTranslator ?? throw new ArgumentNullException(nameof(addressTranslator));
@@ -292,8 +277,6 @@ namespace Cassandra
             RequestOptionsMapper = requestOptionsMapper ?? new RequestOptionsMapper();
             MetadataSyncOptions = metadataSyncOptions?.Clone() ?? new MetadataSyncOptions();
             DnsResolver = dnsResolver ?? null; // FIXME
-            MetadataRequestHandler = null; // FIXME
-            TopologyRefresherFactory = null; // FIXME
             SchemaParserFactory = schemaParserFactory ?? new SchemaParserFactory();
 
             MetricsOptions = metricsOptions ?? new DriverMetricsOptions();
@@ -307,7 +290,6 @@ namespace Cassandra
             RequestHandlerFactory = null; // FIXME
             RequestExecutionFactory = null; // FIXME
             ConnectionFactory = connectionFactory ?? null; // FIXME
-            ControlConnectionFactory = controlConnectionFactory; // FIXME
 
             RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
             ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);
