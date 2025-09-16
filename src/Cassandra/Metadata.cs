@@ -72,11 +72,6 @@ namespace Cassandra
             throw new NotImplementedException();
         }
 
-        internal TokenFactory GetTokenFactory()
-        {
-            throw new NotImplementedException();
-        }
-
         internal KeyspaceMetadata GetKeyspaceFromCache(string keyspace)
         {
             throw new NotImplementedException();
