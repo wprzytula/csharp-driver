@@ -24,11 +24,6 @@ namespace Cassandra.Responses
     internal class Response
     {
         /// <summary>
-        /// Big-endian binary reader of the response frame
-        /// </summary>
-        protected FrameReader Reader { get; }
-
-        /// <summary>
         /// Identifier of the Cassandra trace 
         /// </summary>
         protected internal Guid? TraceId { get; }
@@ -45,75 +40,9 @@ namespace Cassandra.Responses
         /// </summary>
         public IDictionary<string, byte[]> CustomPayload { get; }
 
-        private static TupleColumnInfo TabletColumnInfo = new TupleColumnInfo(
-        new List<ColumnDesc>
-        {
-            new ColumnDesc { TypeCode = ColumnTypeCode.Bigint },
-            new ColumnDesc { TypeCode = ColumnTypeCode.Bigint },
-            new ColumnDesc
-            {
-                TypeCode = ColumnTypeCode.List,
-                TypeInfo = new ListColumnInfo
-                {
-                    ValueTypeCode = ColumnTypeCode.Tuple,
-                    ValueTypeInfo = new TupleColumnInfo(
-                        new List<ColumnDesc>
-                        {
-                            new ColumnDesc { TypeCode = ColumnTypeCode.Uuid },
-                            new ColumnDesc { TypeCode = ColumnTypeCode.Int }
-                        }
-                    )
-                }
-            }
-        }
-        );
-
         internal Response(Frame frame)
         {
-            if (frame == null) throw new ArgumentNullException("frame");
-            if (frame.Body == null) throw new InvalidOperationException("Response body of the received frame was null");
-            if (!frame.Header.Flags.HasFlag(HeaderFlags.Compression) && frame.Header.BodyLength > frame.Body.Length - frame.Body.Position)
-            {
-                throw new DriverInternalError(string.Format(
-                    "Response body length should be contained in stream: Expected {0} but was {1} (position {2})",
-                    frame.Header.BodyLength, frame.Body.Length - frame.Body.Position, frame.Body.Position));
-            }
-
-            Reader = new FrameReader(frame.Body, frame.Serializer);
-
-            if (frame.Header.Flags.HasFlag(HeaderFlags.Tracing))
-            {
-                //If a response frame has the tracing flag set, the first item in its body is the trace id
-                var buffer = new byte[16];
-                Reader.Read(buffer, 0, 16);
-                TraceId = new Guid(TypeSerializer.GuidShuffle(buffer));
-            }
-
-            if (frame.Header.Flags.HasFlag(HeaderFlags.Warning))
-            {
-                Warnings = Reader.ReadStringList();
-            }
-
-            if (frame.Header.Flags.HasFlag(HeaderFlags.CustomPayload))
-            {
-                CustomPayload = Reader.ReadBytesMap();
-
-                if (CustomPayload.ContainsKey(TabletInfo.TABLETS_ROUTING_V1_CUSTOM_PAYLOAD_KEY))
-                {
-                    var tabletInfo = CustomPayload[TabletInfo.TABLETS_ROUTING_V1_CUSTOM_PAYLOAD_KEY];
-
-                    var des = frame.Serializer.Deserialize(tabletInfo, 0, tabletInfo.Length, ColumnTypeCode.Tuple, TabletColumnInfo);
-                    if (des is Tuple<long, long, IEnumerable<Tuple<Guid, int>>> tablet)
-                    {
-                        var replicas = new List<HostShardPair>();
-                        foreach (var replica in tablet.Item3)
-                        {
-                            replicas.Add(new HostShardPair(replica.Item1, replica.Item2));
-                        }
-                        Tablet = new Tablet(tablet.Item1, tablet.Item2, replicas);
-                    }
-                }
-            }
+            
         }
 
         /// <summary>
