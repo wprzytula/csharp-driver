@@ -128,8 +128,6 @@ namespace Cassandra
 
         internal IRequestExecutionFactory RequestExecutionFactory { get; }
 
-        internal IConnectionFactory ConnectionFactory { get; }
-
         internal IEndPointResolver EndPointResolver { get; }
 
         internal IDnsResolver DnsResolver { get; }
@@ -251,7 +249,6 @@ namespace Cassandra
                                IRequestOptionsMapper requestOptionsMapper = null,
                                IRequestHandlerFactory requestHandlerFactory = null,
                                IRequestExecutionFactory requestExecutionFactory = null,
-                               IConnectionFactory connectionFactory = null,
                                IContactPointParser contactPointParser = null,
                                IServerNameResolver serverNameResolver = null,
                                IDnsResolver dnsResolver = null,
@@ -289,7 +286,6 @@ namespace Cassandra
 
             RequestHandlerFactory = null; // FIXME
             RequestExecutionFactory = null; // FIXME
-            ConnectionFactory = connectionFactory ?? null; // FIXME
 
             RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
             ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);
