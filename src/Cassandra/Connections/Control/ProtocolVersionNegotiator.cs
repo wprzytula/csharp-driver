@@ -62,10 +62,6 @@ namespace Cassandra.Connections.Control
                 throw new DriverInternalError("Connection was unable to STARTUP using protocol version 0");
             }
 
-            ControlConnection.Logger.Info(ex != null
-                ? $"{ex.Message}, trying with version {nextVersion:D}"
-                : $"Changing protocol version to {nextVersion:D}");
-
             serializer.ChangeProtocolVersion(nextVersion);
 
             previousConnection.Dispose();

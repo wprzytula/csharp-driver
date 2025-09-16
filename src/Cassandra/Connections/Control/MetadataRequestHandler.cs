@@ -35,10 +35,8 @@ namespace Cassandra.Connections.Control
             {
                 response = await connection.Send(request).ConfigureAwait(false);
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
-                ControlConnection.Logger.Error(
-                    $"There was an error while executing on the host {cqlQuery} the query '{connection.EndPoint.EndpointFriendlyName}'", ex);
                 throw;
             }
             return response;
