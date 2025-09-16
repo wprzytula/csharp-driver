@@ -31,7 +31,6 @@ using Cassandra.Serialization;
 using Cassandra.SessionManagement;
 using Cassandra.Tasks;
 
-using Microsoft.IO;
 
 namespace Cassandra
 {
@@ -113,11 +112,6 @@ namespace Cassandra
         /// Shared reusable timer
         /// </summary>
         internal HashedWheelTimer Timer { get; private set; }
-
-        /// <summary>
-        /// Shared buffer pool
-        /// </summary>
-        internal RecyclableMemoryStreamManager BufferPool { get; private set; }
 
         /// <summary>
         /// Gets or sets the list of <see cref="TypeSerializer{T}"/> defined.
@@ -330,7 +324,6 @@ namespace Cassandra
             // Create the buffer pool with 16KB for small buffers and 256Kb for large buffers.
             // The pool does not eagerly reserve the buffers, so it doesn't take unnecessary memory
             // to create the instance.
-            BufferPool = new RecyclableMemoryStreamManager(16 * 1024, 256 * 1024, ProtocolOptions.MaximumFrameLength);
             Timer = new HashedWheelTimer();
         }
 

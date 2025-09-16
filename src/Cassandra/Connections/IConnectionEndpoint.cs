@@ -35,9 +35,6 @@ namespace Cassandra.Connections
         /// </summary>
         IContactPoint ContactPoint { get; }
 
-        /// <summary>
-        /// IpEndPoint to which the driver will connect to (via <see cref="ITcpSocket"/>). This can never be null.
-        /// </summary>
         IPEndPoint SocketIpEndPoint { get; }
 
         /// <summary>
@@ -45,11 +42,6 @@ namespace Cassandra.Connections
         /// </summary>
         string EndpointFriendlyName { get; }
 
-        /// <summary>
-        /// Server name of the host, in the context of TLS and SNI. The value returned by this method is meant to be used
-        /// in <see cref="ITcpSocket"/> when opening a TLS connection. Also, see the parameter of <see cref="SslStream.AuthenticateAsClientAsync(string)"/>,
-        /// which is used to verify the host name of the certificate but is also used as the Server Name in SNI (SNI is always enabled).
-        /// </summary>
         Task<string> GetServerNameAsync();
 
         /// <summary>
