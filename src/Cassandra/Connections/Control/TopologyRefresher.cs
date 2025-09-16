@@ -26,19 +26,9 @@ namespace Cassandra.Connections.Control
     /// <inheritdoc />
     internal class TopologyRefresher : ITopologyRefresher
     {
-        private const string SelectPeers = "SELECT * FROM system.peers";
-        private const string SelectPeersV2 = "SELECT * FROM system.peers_v2";
-        private const string SelectLocal = "SELECT * FROM system.local WHERE key='local'";
-
-        private static readonly IPAddress BindAllAddress = new IPAddress(new byte[4]);
-
-        private readonly Configuration _config;
-        private readonly Metadata _metadata;
-
         public TopologyRefresher(Metadata metadata, Configuration config)
         {
-            _metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
