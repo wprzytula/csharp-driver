@@ -132,8 +132,6 @@ namespace Cassandra
 
         internal IRequestHandlerFactory RequestHandlerFactory { get; }
 
-        internal IHostConnectionPoolFactory HostConnectionPoolFactory { get; }
-
         internal IRequestExecutionFactory RequestExecutionFactory { get; }
 
         internal IConnectionFactory ConnectionFactory { get; }
@@ -270,7 +268,6 @@ namespace Cassandra
                                ISessionFactory sessionFactory = null,
                                IRequestOptionsMapper requestOptionsMapper = null,
                                IRequestHandlerFactory requestHandlerFactory = null,
-                               IHostConnectionPoolFactory hostConnectionPoolFactory = null,
                                IRequestExecutionFactory requestExecutionFactory = null,
                                IConnectionFactory connectionFactory = null,
                                IControlConnectionFactory controlConnectionFactory = null,
@@ -318,7 +315,6 @@ namespace Cassandra
             AllowBetaProtocolVersions = allowBetaProtocolVersions ?? false;
 
             RequestHandlerFactory = null; // FIXME
-            HostConnectionPoolFactory = null; // FIXME
             RequestExecutionFactory = null; // FIXME
             ConnectionFactory = connectionFactory ?? null; // FIXME
             ControlConnectionFactory = controlConnectionFactory; // FIXME
