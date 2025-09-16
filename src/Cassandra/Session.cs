@@ -41,7 +41,6 @@ namespace Cassandra
         private readonly ICluster _cluster;
         private int _disposed;
         private readonly IMetricsManager _metricsManager;
-        private readonly IObserverFactory _observerFactory;
 
         internal IInternalSession InternalRef
         {
@@ -90,7 +89,6 @@ namespace Cassandra
             Configuration = configuration;
             Keyspace = keyspace;
             _metricsManager = new MetricsManager(configuration.MetricsProvider, Configuration.MetricsOptions, Configuration.MetricsEnabled, SessionName);
-            _observerFactory = configuration.ObserverFactoryBuilder.Build(_metricsManager);
         }
 
         /// <inheritdoc />

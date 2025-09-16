@@ -26,10 +26,6 @@ using Cassandra.MetadataHelpers;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Abstractions;
 using Cassandra.Metrics.Providers.Null;
-using Cassandra.Observers;
-using Cassandra.Observers.Composite;
-using Cassandra.Observers.Metrics;
-using Cassandra.Observers.RequestTracker;
 using Cassandra.Requests;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
@@ -171,8 +167,6 @@ namespace Cassandra
         internal string SessionName { get; }
 
         internal bool MetricsEnabled { get; }
-
-        internal IObserverFactoryBuilder ObserverFactoryBuilder { get; }
 
         internal static string DefaultApplicationVersion => string.Empty;
 
@@ -329,10 +323,6 @@ namespace Cassandra
             TypeSerializers = typeSerializerDefinitions?.Definitions;
             KeepContactPointsUnresolved = keepContactPointsUnresolved ?? false;
             AllowBetaProtocolVersions = allowBetaProtocolVersions ?? false;
-
-            ObserverFactoryBuilder = new CompositeObserverFactoryBuilder(
-                new MetricsObserverFactoryBuilder(MetricsEnabled),
-                new RequestTrackerObserverFactoryBuilder(requestTracker));
 
             RequestHandlerFactory = null; // FIXME
             HostConnectionPoolFactory = null; // FIXME
