@@ -323,17 +323,6 @@ namespace Cassandra
         /// </summary>
         ConcurrentDictionary<byte[], PreparedStatement> IInternalCluster.PreparedQueries { get; }
 
-        /// <summary>
-        /// Executes the prepare request on the first host selected by the load balancing policy.
-        /// When <see cref="QueryOptions.IsPrepareOnAllHosts"/> is enabled, it prepares on the rest of the hosts in
-        /// parallel.
-        /// In case the statement was already in the prepared statements cache, logs an warning but prepares it anyway.
-        /// </summary>
-        Task<PreparedStatement> IInternalCluster.Prepare(IInternalSession session, ISerializerManager serializerManager, InternalPrepareRequest request)
-        {
-            throw new NotImplementedException("STUB: reimplement tests and remove me");
-        }
-
         IReadOnlyDictionary<IContactPoint, IEnumerable<IConnectionEndPoint>> IInternalCluster.GetResolvedEndpoints()
         {
             throw new NotImplementedException("STUB: reimplement tests and remove me");

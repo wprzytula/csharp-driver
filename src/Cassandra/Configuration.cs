@@ -126,8 +126,6 @@ namespace Cassandra
 
         internal MetadataSyncOptions MetadataSyncOptions { get; }
 
-        internal IStartupOptionsFactory StartupOptionsFactory { get; }
-
         internal ISessionFactory SessionFactory { get; }
 
         internal IRequestOptionsMapper RequestOptionsMapper { get; }
@@ -141,8 +139,6 @@ namespace Cassandra
         internal IConnectionFactory ConnectionFactory { get; }
 
         internal IControlConnectionFactory ControlConnectionFactory { get; }
-
-        internal IPrepareHandlerFactory PrepareHandlerFactory { get; }
 
         internal IEndPointResolver EndPointResolver { get; }
 
@@ -273,13 +269,11 @@ namespace Cassandra
                                bool? allowBetaProtocolVersions,
                                ISessionFactory sessionFactory = null,
                                IRequestOptionsMapper requestOptionsMapper = null,
-                               IStartupOptionsFactory startupOptionsFactory = null,
                                IRequestHandlerFactory requestHandlerFactory = null,
                                IHostConnectionPoolFactory hostConnectionPoolFactory = null,
                                IRequestExecutionFactory requestExecutionFactory = null,
                                IConnectionFactory connectionFactory = null,
                                IControlConnectionFactory controlConnectionFactory = null,
-                               IPrepareHandlerFactory prepareHandlerFactory = null,
                                IContactPointParser contactPointParser = null,
                                IServerNameResolver serverNameResolver = null,
                                IDnsResolver dnsResolver = null,
@@ -306,7 +300,6 @@ namespace Cassandra
             ClientOptions = clientOptions;
             AuthProvider = authProvider;
             AuthInfoProvider = authInfoProvider;
-            StartupOptionsFactory = startupOptionsFactory ?? new StartupOptionsFactory(ClusterId, ApplicationVersion, ApplicationName);
             SessionFactory = sessionFactory ?? new SessionFactory();
             RequestOptionsMapper = requestOptionsMapper ?? new RequestOptionsMapper();
             MetadataSyncOptions = metadataSyncOptions?.Clone() ?? new MetadataSyncOptions();
@@ -329,7 +322,6 @@ namespace Cassandra
             RequestExecutionFactory = null; // FIXME
             ConnectionFactory = connectionFactory ?? null; // FIXME
             ControlConnectionFactory = controlConnectionFactory; // FIXME
-            PrepareHandlerFactory = null; // FIXME
 
             RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
             ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);

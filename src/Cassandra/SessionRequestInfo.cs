@@ -35,11 +35,6 @@ namespace Cassandra
             Statement = statement;
         }
 
-        internal SessionRequestInfo(InternalPrepareRequest prepareRequest, string sessionKeyspace) : this(sessionKeyspace)
-        {
-            PrepareRequest = new PrepareRequest(prepareRequest.Query, prepareRequest.Keyspace);
-        }
-
         public ConcurrentDictionary<string, object> Items { get; } = new ConcurrentDictionary<string, object>();
 
         /// <summary>
