@@ -163,13 +163,10 @@ namespace Cassandra
                 //fallback to use any of the hosts
                 return _cluster.AllHosts().FirstOrDefault(h => h.Datacenter != null);
             }
-            var cc = clusterImplementation.GetControlConnection();
-            if (cc == null)
-            {
-                throw new DriverInternalError("ControlConnection was not correctly set");
-            }
+
             //Use the host used by the control connection
-            return cc.Host;
+            // return cc.Host;
+            throw new NotImplementedException(); // FIXME: bridge with Rust LBP implementation.
         }
 
         /// <summary>

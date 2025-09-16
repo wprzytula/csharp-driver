@@ -57,11 +57,6 @@ namespace Cassandra
         /// </summary>
         internal Configuration Configuration { get; private set; }
 
-        /// <summary>
-        /// Control connection to be used to execute the queries to retrieve the metadata
-        /// </summary>
-        internal IControlConnection ControlConnection { get; set; }
-
         internal string Partitioner { get; set; }
 
         internal Hosts Hosts { get; private set; }

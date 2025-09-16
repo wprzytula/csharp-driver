@@ -30,11 +30,6 @@ namespace Cassandra.SessionManagement
         bool AnyOpenConnections(Host host);
 
         /// <summary>
-        /// Gets the control connection used by the cluster
-        /// </summary>
-        IControlConnection GetControlConnection();
-
-        /// <summary>
         /// Gets the the prepared statements cache
         /// </summary>
         ConcurrentDictionary<byte[], PreparedStatement> PreparedQueries { get; }

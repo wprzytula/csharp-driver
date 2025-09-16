@@ -311,14 +311,6 @@ namespace Cassandra
         }
 
         /// <summary>
-        /// Gets the control connection used by the cluster
-        /// </summary>
-        IControlConnection IInternalCluster.GetControlConnection()
-        {
-            throw new NotImplementedException("STUB: reimplement tests and remove me");
-        }
-
-        /// <summary>
         /// Gets the the prepared statements cache
         /// </summary>
         ConcurrentDictionary<byte[], PreparedStatement> IInternalCluster.PreparedQueries { get; }
