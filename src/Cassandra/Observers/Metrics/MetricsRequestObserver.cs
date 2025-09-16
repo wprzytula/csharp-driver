@@ -69,10 +69,7 @@ namespace Cassandra.Observers.Metrics
 
         public Task OnNodeRequestErrorAsync(IRequestError error, SessionRequestInfo r, NodeRequestInfo nodeRequestInfo)
         {
-            var nodeMetrics = _manager.GetOrCreateNodeMetrics(nodeRequestInfo.Host);
-            var errorType = RequestExecution.GetErrorType(error);
-            OnRequestError(nodeMetrics.Errors, errorType);
-            return TaskHelper.Completed;
+            throw new NotImplementedException();
         }
 
         private void OnRetryPolicyDecision(IRetryPolicyMetrics metricsRegistry, RequestErrorType reason)

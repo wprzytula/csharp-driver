@@ -334,9 +334,9 @@ namespace Cassandra
                 new MetricsObserverFactoryBuilder(MetricsEnabled),
                 new RequestTrackerObserverFactoryBuilder(requestTracker));
 
-            RequestHandlerFactory = requestHandlerFactory ?? new RequestHandlerFactory();
+            RequestHandlerFactory = null; // FIXME
             HostConnectionPoolFactory = null; // FIXME
-            RequestExecutionFactory = requestExecutionFactory ?? new RequestExecutionFactory();
+            RequestExecutionFactory = null; // FIXME
             ConnectionFactory = connectionFactory ?? null; // FIXME
             ControlConnectionFactory = controlConnectionFactory; // FIXME
             PrepareHandlerFactory = null; // FIXME
