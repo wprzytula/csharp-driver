@@ -270,7 +270,6 @@ namespace Cassandra.Requests
                 {
                     _session.Keyspace = keyspace.Value;
                 }
-                rs = RowSet.Empty();
             }
 
             if (response.Tablet != null)
@@ -284,7 +283,7 @@ namespace Cassandra.Requests
                 }
             }
 
-            await _parent.SetCompletedAsync(null, FillRowSet(rs, resultResponse)).ConfigureAwait(false);
+            throw new NotImplementedException();
         }
 
         private Task HandleSchemaChangeAsync(ResultResponse response, OutputSchemaChange schemaChange)
@@ -358,32 +357,7 @@ namespace Cassandra.Requests
             {
                 rs.Info.SetAchievedConsistency(request.Consistency);
             }
-            SetAutoPage(rs, _session);
             return rs;
-        }
-
-        private void SetAutoPage(RowSet rs, IInternalSession session)
-        {
-            var statement = _parent.Statement;
-            rs.AutoPage = statement != null && statement.AutoPage;
-            if (rs.AutoPage && rs.PagingState != null && _request is IQueryRequest)
-            {
-                // Automatic paging is enabled and there are following result pages
-                rs.SetFetchNextPageHandler(async pagingState =>
-                {
-                    if (_session.IsDisposed)
-                    {
-                        RequestExecution.Logger.Warning("Trying to page results using a Session already disposed.");
-                        return RowSet.Empty();
-                    }
-
-                    var request = (IQueryRequest)_parent.BuildRequest();
-                    request.PagingState = pagingState;
-                    var handler = await _session.Cluster.Configuration.RequestHandlerFactory.CreateAsync(
-                        session, _parent.Serializer, request, statement, _parent.RequestOptions).ConfigureAwait(false);
-                    return await handler.SendAsync().ConfigureAwait(false);
-                }, _parent.RequestOptions.QueryAbortTimeout, _session.MetricsManager);
-            }
         }
 
         /// <summary>
@@ -452,8 +426,7 @@ namespace Cassandra.Requests
                 case RetryDecision.RetryDecisionType.Ignore:
                     await ObserveNodeRequestErrorAsync(error, retryInformation.Reason, RetryDecision.RetryDecisionType.Ignore, _sessionRequestInfo, nodeRequestInfo, ex).ConfigureAwait(false);
                     // The error was ignored by the RetryPolicy, return an empty rowset
-                    await _parent.SetCompletedAsync(null, FillRowSet(RowSet.Empty(), null)).ConfigureAwait(false);
-                    break;
+                    throw new NotImplementedException();
                 case RetryDecision.RetryDecisionType.Retry:
                     await ObserveNodeRequestErrorAsync(error, retryInformation.Reason, RetryDecision.RetryDecisionType.Retry, _sessionRequestInfo, nodeRequestInfo, ex).ConfigureAwait(false);
                     //Retry the Request using the new consistency level

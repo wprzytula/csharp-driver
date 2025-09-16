@@ -67,12 +67,6 @@ namespace Cassandra
                 resultMetadata = providedResultMetadata?.RowSetMetadata;
                 rs.Columns = resultMetadata?.Columns;
             }
-
-            var reusableBuffer = ReusableBuffer.Value;
-            for (var i = 0; i < _rowLength; i++)
-            {
-                rs.AddRow(ProcessRowItem(reader, resultMetadata, reusableBuffer));
-            }
         }
 
         static Row ProcessRowItem(FrameReader reader, RowSetMetadata resultMetadata, byte[] reusableBuffer)
