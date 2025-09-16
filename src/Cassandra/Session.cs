@@ -87,7 +87,9 @@ namespace Cassandra
             _cluster = cluster;
             Configuration = configuration;
             Keyspace = keyspace;
-            _metricsManager = new MetricsManager(configuration.MetricsProvider, Configuration.MetricsOptions, Configuration.MetricsEnabled, SessionName);
+            // FIXME:
+            _metricsManager = null;
+            // _metricsManager = new MetricsManager(configuration.MetricsProvider, Configuration.MetricsOptions, Configuration.MetricsEnabled, SessionName);
         }
 
         /// <inheritdoc />
