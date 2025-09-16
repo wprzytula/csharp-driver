@@ -30,7 +30,6 @@ using Cassandra.Observers;
 using Cassandra.Observers.Composite;
 using Cassandra.Observers.Metrics;
 using Cassandra.Observers.RequestTracker;
-using Cassandra.ProtocolEvents;
 using Cassandra.Requests;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
@@ -148,8 +147,6 @@ namespace Cassandra
         internal IControlConnectionFactory ControlConnectionFactory { get; }
 
         internal IPrepareHandlerFactory PrepareHandlerFactory { get; }
-
-        internal ITimerFactory TimerFactory { get; }
 
         internal IEndPointResolver EndPointResolver { get; }
 
@@ -289,7 +286,6 @@ namespace Cassandra
                                IConnectionFactory connectionFactory = null,
                                IControlConnectionFactory controlConnectionFactory = null,
                                IPrepareHandlerFactory prepareHandlerFactory = null,
-                               ITimerFactory timerFactory = null,
                                IContactPointParser contactPointParser = null,
                                IServerNameResolver serverNameResolver = null,
                                IDnsResolver dnsResolver = null,
@@ -346,7 +342,6 @@ namespace Cassandra
             ConnectionFactory = connectionFactory ?? new ConnectionFactory();
             ControlConnectionFactory = controlConnectionFactory ?? new ControlConnectionFactory();
             PrepareHandlerFactory = prepareHandlerFactory ?? new PrepareHandlerFactory();
-            TimerFactory = timerFactory ?? new TaskBasedTimerFactory();
 
             RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
             ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);

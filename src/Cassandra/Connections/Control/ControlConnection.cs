@@ -22,7 +22,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Cassandra.ProtocolEvents;
 using Cassandra.Responses;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
@@ -50,7 +49,6 @@ namespace Cassandra.Connections.Control
         private int _refreshFlag;
         private Task<IConnection> _reconnectTask;
         private readonly ISerializerManager _serializer;
-        private readonly IProtocolEventDebouncer _eventDebouncer;
         private readonly IEnumerable<IContactPoint> _contactPoints;
         private readonly ITopologyRefresher _topologyRefresher;
         private readonly ISupportedOptionsInitializer _supportedOptionsInitializer;
@@ -79,7 +77,6 @@ namespace Cassandra.Connections.Control
 
         internal ControlConnection(
             IInternalCluster cluster,
-            IProtocolEventDebouncer eventDebouncer,
             ProtocolVersion initialProtocolVersion,
             Configuration config,
             Metadata metadata,
@@ -92,7 +89,6 @@ namespace Cassandra.Connections.Control
             _reconnectionTimer = new Timer(ReconnectEventHandler, null, Timeout.Infinite, Timeout.Infinite);
             _config = config;
             _serializer = new SerializerManager(initialProtocolVersion, config.Policies.ColumnEncryptionPolicy, config.TypeSerializers);
-            _eventDebouncer = eventDebouncer;
             _contactPoints = contactPoints;
             _topologyRefresher = config.TopologyRefresherFactory.Create(metadata, config);
             _supportedOptionsInitializer = config.SupportedOptionsInitializerFactory.Create(metadata);
@@ -858,44 +854,31 @@ namespace Cassandra.Connections.Control
         }
 
         /// <inheritdoc />
-        public async Task HandleKeyspaceRefreshLaterAsync(string keyspace)
+        public Task HandleKeyspaceRefreshLaterAsync(string keyspace)
         {
-            var @event = new KeyspaceProtocolEvent(true, keyspace, async () =>
-            {
-                await _metadata.RefreshSingleKeyspace(keyspace).ConfigureAwait(false);
-            });
-            await _eventDebouncer.HandleEventAsync(@event, false).ConfigureAwait(false);
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         public Task ScheduleKeyspaceRefreshAsync(string keyspace, bool processNow)
         {
-            var @event = new KeyspaceProtocolEvent(true, keyspace, () => _metadata.RefreshSingleKeyspace(keyspace));
-            return processNow
-                ? _eventDebouncer.HandleEventAsync(@event, true)
-                : _eventDebouncer.ScheduleEventAsync(@event, false);
+            throw new NotImplementedException();
         }
 
         private Task ScheduleObjectRefreshAsync(string keyspace, bool processNow, Func<Task> handler)
         {
-            var @event = new KeyspaceProtocolEvent(false, keyspace, handler);
-            return processNow
-                ? _eventDebouncer.HandleEventAsync(@event, true)
-                : _eventDebouncer.ScheduleEventAsync(@event, false);
+            throw new NotImplementedException();
         }
 
         private Task ScheduleHostsRefreshAsync()
         {
-            return _eventDebouncer.ScheduleEventAsync(new ProtocolEvent(Refresh), false);
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         public Task ScheduleAllKeyspacesRefreshAsync(bool processNow)
         {
-            var @event = new ProtocolEvent(() => _metadata.RebuildTokenMapAsync(false, true));
-            return processNow
-                ? _eventDebouncer.HandleEventAsync(@event, true)
-                : _eventDebouncer.ScheduleEventAsync(@event, false);
+            throw new NotImplementedException();
         }
 
         public bool IsShardAware()

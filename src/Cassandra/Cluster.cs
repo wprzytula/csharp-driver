@@ -28,7 +28,6 @@ using Cassandra.Collections;
 using Cassandra.Connections;
 using Cassandra.Connections.Control;
 using Cassandra.Helpers;
-using Cassandra.ProtocolEvents;
 using Cassandra.Requests;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;

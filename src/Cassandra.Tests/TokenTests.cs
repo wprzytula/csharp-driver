@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 using Cassandra.Connections;
 using Cassandra.Connections.Control;
 using Cassandra.MetadataHelpers;
-using Cassandra.ProtocolEvents;
 using Cassandra.SessionManagement;
 using Cassandra.Tests.Connections.TestHelpers;
 using Cassandra.Tests.MetadataHelpers.TestHelpers;

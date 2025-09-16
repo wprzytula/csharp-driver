@@ -15,7 +15,6 @@
 //
 
 using System.Collections.Generic;
-using Cassandra.ProtocolEvents;
 using Cassandra.SessionManagement;
 
 namespace Cassandra.Connections.Control
@@ -24,7 +23,6 @@ namespace Cassandra.Connections.Control
     {
         public IControlConnection Create(
             IInternalCluster cluster,
-            IProtocolEventDebouncer protocolEventDebouncer,
             ProtocolVersion initialProtocolVersion,
             Configuration config,
             Metadata metadata,
@@ -32,7 +30,6 @@ namespace Cassandra.Connections.Control
         {
             return new ControlConnection(
                 cluster,
-                protocolEventDebouncer,
                 initialProtocolVersion,
                 config,
                 metadata,
