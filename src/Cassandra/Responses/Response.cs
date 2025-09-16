@@ -40,11 +40,6 @@ namespace Cassandra.Responses
         /// </summary>
         public IDictionary<string, byte[]> CustomPayload { get; }
 
-        internal Response(Frame frame)
-        {
-            
-        }
-
         /// <summary>
         /// Testing purposes only
         /// </summary>
