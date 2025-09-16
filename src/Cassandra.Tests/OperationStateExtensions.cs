@@ -19,7 +19,6 @@ using Cassandra.Metrics;
 using Cassandra.Metrics.Providers.Null;
 using Cassandra.Metrics.Registries;
 using Cassandra.Observers.Metrics;
-using Cassandra.Responses;
 using Cassandra.Tasks;
 
 namespace Cassandra.Tests

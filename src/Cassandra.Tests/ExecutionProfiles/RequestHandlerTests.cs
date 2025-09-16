@@ -25,7 +25,6 @@ using System.Threading.Tasks;
 using Cassandra.Connections;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Observers.Null;
-using Cassandra.Responses;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
 using Cassandra.Tests.Connections.TestHelpers;

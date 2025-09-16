@@ -23,7 +23,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Cassandra.Connections;
-using Cassandra.Responses;
 using Cassandra.Serialization;
 using Cassandra.SessionManagement;
 using Cassandra.Tests.Connections.TestHelpers;

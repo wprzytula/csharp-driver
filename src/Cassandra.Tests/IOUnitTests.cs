@@ -21,7 +21,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using Cassandra.Compression;
-using Cassandra.Responses;
 using Cassandra.Serialization;
 using Cassandra.Tasks;
 

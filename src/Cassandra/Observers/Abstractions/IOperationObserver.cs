@@ -15,14 +15,10 @@
 //
 
 using Cassandra.Connections;
-using Cassandra.Responses;
 
 namespace Cassandra.Observers.Abstractions
 {
     internal interface IOperationObserver
     {
-        void OnOperationSend(long requestSize, long timestamp);
-
-        void OnOperationReceive(IRequestError exception, Response response, long timestamp);
     }
 }

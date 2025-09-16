@@ -33,7 +33,6 @@ using Cassandra.IntegrationTests.TestClusterManagement.Simulacron;
 using Cassandra.Observers.Null;
 using Cassandra.Tasks;
 using Cassandra.Tests;
-using Cassandra.Responses;
 using Cassandra.Serialization;
 
 using Moq;

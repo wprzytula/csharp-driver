@@ -19,7 +19,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Cassandra.Collections;
-using Cassandra.Responses;
 using Cassandra.Serialization;
 
 namespace Cassandra.Connections
@@ -98,22 +97,6 @@ namespace Cassandra.Connections
         int GetMaxConcurrentRequests(ISerializer serializer);
 
         ProtocolOptions Options { get; }
-
-        /// <summary>
-        /// Initializes the connection.
-        /// </summary>
-        /// <exception cref="SocketException">Throws a SocketException when the connection could not be established with the host</exception>
-        /// <exception cref="AuthenticationException" />
-        Task<Response> Open();
-
-        /// <summary>
-        /// Initializes the connection.
-        /// </summary>
-        /// <param name="shardID">The shard ID</param>
-        /// <param name="shardCount">The shard count</param>
-        /// <exception cref="SocketException">Throws a SocketException when the connection could not be established with the host</exception>
-        /// <exception cref="AuthenticationException" />
-        Task<Response> Open(int shardID, int shardCount);
 
         /// <summary>
         /// Sets the keyspace of the connection.
