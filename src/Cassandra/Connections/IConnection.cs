@@ -105,7 +105,6 @@ namespace Cassandra.Connections
         /// </summary>
         /// <exception cref="SocketException">Throws a SocketException when the connection could not be established with the host</exception>
         /// <exception cref="AuthenticationException" />
-        /// <exception cref="UnsupportedProtocolVersionException"></exception>
         Task<Response> Open();
 
         /// <summary>
@@ -115,7 +114,6 @@ namespace Cassandra.Connections
         /// <param name="shardCount">The shard count</param>
         /// <exception cref="SocketException">Throws a SocketException when the connection could not be established with the host</exception>
         /// <exception cref="AuthenticationException" />
-        /// <exception cref="UnsupportedProtocolVersionException"></exception>
         Task<Response> Open(int shardID, int shardCount);
 
         /// <summary>

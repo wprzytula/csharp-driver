@@ -144,8 +144,6 @@ namespace Cassandra
 
         internal ISupportedOptionsInitializerFactory SupportedOptionsInitializerFactory { get; }
 
-        internal IProtocolVersionNegotiator ProtocolVersionNegotiator { get; }
-
         internal IServerEventsSubscriber ServerEventsSubscriber { get; }
 
         internal IDriverMetricsProvider MetricsProvider { get; }
@@ -272,7 +270,6 @@ namespace Cassandra
                                ITopologyRefresherFactory topologyRefresherFactory = null,
                                ISchemaParserFactory schemaParserFactory = null,
                                ISupportedOptionsInitializerFactory supportedOptionsInitializerFactory = null,
-                               IProtocolVersionNegotiator protocolVersionNegotiator = null,
                                IServerEventsSubscriber serverEventsSubscriber = null,
                                IRequestTracker requestTracker = null)
         {
@@ -298,7 +295,6 @@ namespace Cassandra
             MetadataRequestHandler = null; // FIXME
             TopologyRefresherFactory = null; // FIXME
             SchemaParserFactory = schemaParserFactory ?? new SchemaParserFactory();
-            ProtocolVersionNegotiator = null; // FIXME
 
             MetricsOptions = metricsOptions ?? new DriverMetricsOptions();
             MetricsProvider = driverMetricsProvider ?? new NullDriverMetricsProvider();

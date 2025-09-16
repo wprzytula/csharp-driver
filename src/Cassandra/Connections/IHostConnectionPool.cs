@@ -50,7 +50,6 @@ namespace Cassandra.Connections
         /// </summary>
         /// <exception cref="DriverInternalError" />
         /// <exception cref="BusyPoolException" />
-        /// <exception cref="UnsupportedProtocolVersionException" />
         /// <exception cref="SocketException" />
         /// <exception cref="AuthenticationException" />
         Task<IConnection> BorrowConnectionAsync(RoutingKey routingKey = null, int shardID = -1);
