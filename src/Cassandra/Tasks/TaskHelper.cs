@@ -187,23 +187,6 @@ namespace Cassandra.Tasks
         }
 
         /// <summary>
-        /// Attempts to transition the underlying Task to RanToCompletion or Faulted state.
-        /// </summary>
-        public static Task TrySetRequestErrorAsync<T>(this TaskCompletionSource<T> tcs, IRequestError error, T result)
-        {
-            if (error?.Exception != null)
-            {
-                tcs.TrySetException(error.Exception);
-            }
-            else
-            {
-                tcs.TrySetResult(result);
-            }
-
-            return TaskHelper.Completed;
-        }
-
-        /// <summary>
         /// Smart ContinueWith that executes the sync delegate once the initial task is completed and returns 
         /// a Task of the result of sync delegate while propagating exceptions
         /// </summary>
