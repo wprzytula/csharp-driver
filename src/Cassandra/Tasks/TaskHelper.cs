@@ -19,7 +19,6 @@ using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Cassandra.Connections;
-using Cassandra.Metrics.Internal;
 
 namespace Cassandra.Tasks
 {
@@ -95,37 +94,6 @@ namespace Cassandra.Tasks
         public static T WaitToComplete<T>(Task<T> task, int timeout = Timeout.Infinite)
         {
             TaskHelper.WaitToComplete((Task)task, timeout);
-            return task.Result;
-        }
-
-        /// <summary>
-        /// Increments session client timeout counter in case of timeout.
-        /// </summary>
-        public static void WaitToCompleteWithMetrics(IMetricsManager manager, Task task, int timeout = Timeout.Infinite)
-        {
-            if (!(manager?.AreMetricsEnabled ?? false))
-            {
-                TaskHelper.WaitToComplete(task, timeout);
-                return;
-            }
-
-            try
-            {
-                TaskHelper.WaitToComplete(task, timeout);
-            }
-            catch (TimeoutException)
-            {
-                // manager.GetSessionMetrics().CqlClientTimeouts.Increment(); FIXME
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Increments session client timeout counter in case of timeout.
-        /// </summary>
-        public static T WaitToCompleteWithMetrics<T>(IMetricsManager manager, Task<T> task, int timeout = Timeout.Infinite)
-        {
-            TaskHelper.WaitToCompleteWithMetrics(manager, (Task)task, timeout);
             return task.Result;
         }
 

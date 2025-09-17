@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using Cassandra.Connections;
 using Cassandra.Helpers;
 using Cassandra.Metrics;
-using Cassandra.Metrics.Internal;
 using Cassandra.Metrics.Providers.Null;
 using Cassandra.Serialization;
 using Cassandra.Tests.Connections.TestHelpers;
