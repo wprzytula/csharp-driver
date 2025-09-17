@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Cassandra.SessionManagement;
 
 namespace Cassandra
 {
@@ -40,11 +39,6 @@ namespace Cassandra
         /// <param name="instance"></param>
         /// <returns></returns>
         public static ISessionState GetState(this ISession instance)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal static ISessionState GetState(this IInternalSession instance)
         {
             throw new NotImplementedException();
         }

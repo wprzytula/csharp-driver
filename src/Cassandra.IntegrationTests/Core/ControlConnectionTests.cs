@@ -22,7 +22,6 @@ using Cassandra.Connections.Control;
 using Cassandra.IntegrationTests.TestBase;
 using NUnit.Framework;
 using Cassandra.IntegrationTests.TestClusterManagement;
-using Cassandra.SessionManagement;
 using Cassandra.Tests;
 using Moq;
 

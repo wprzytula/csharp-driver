@@ -21,7 +21,6 @@ using System.Net;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Providers.Null;
 using Cassandra.Serialization;
-using Cassandra.SessionManagement;
 using Moq;
 
 using NUnit.Framework;

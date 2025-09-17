@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using Cassandra.Connections;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Serialization;
-using Cassandra.SessionManagement;
 using Moq;
 
 using NUnit.Framework;

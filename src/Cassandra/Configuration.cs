@@ -26,7 +26,6 @@ using Cassandra.Metrics;
 using Cassandra.Metrics.Abstractions;
 using Cassandra.Metrics.Providers.Null;
 using Cassandra.Serialization;
-using Cassandra.SessionManagement;
 using Cassandra.Tasks;
 
 
@@ -111,8 +110,6 @@ namespace Cassandra
         internal IEnumerable<ITypeSerializer> TypeSerializers { get; set; }
 
         internal MetadataSyncOptions MetadataSyncOptions { get; }
-
-        internal ISessionFactory SessionFactory { get; }
 
         internal IRequestOptionsMapper RequestOptionsMapper { get; }
 
@@ -229,7 +226,6 @@ namespace Cassandra
                                TypeSerializerDefinitions typeSerializerDefinitions,
                                bool? keepContactPointsUnresolved,
                                bool? allowBetaProtocolVersions,
-                               ISessionFactory sessionFactory = null,
                                IRequestOptionsMapper requestOptionsMapper = null,
                                IContactPointParser contactPointParser = null,
                                IServerNameResolver serverNameResolver = null,
@@ -250,7 +246,6 @@ namespace Cassandra
             SocketOptions = socketOptions;
             ClientOptions = clientOptions;
             AuthProvider = authProvider;
-            SessionFactory = sessionFactory ?? new SessionFactory();
             RequestOptionsMapper = requestOptionsMapper ?? new RequestOptionsMapper();
             MetadataSyncOptions = metadataSyncOptions?.Clone() ?? new MetadataSyncOptions();
             DnsResolver = dnsResolver ?? null; // FIXME

@@ -26,7 +26,6 @@ using Cassandra.Connections;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Metrics;
 using Cassandra.Serialization;
-using Cassandra.SessionManagement;
 using Cassandra.Tasks;
 
 namespace Cassandra
@@ -37,12 +36,6 @@ namespace Cassandra
         private static readonly Logger Logger = new Logger(typeof(Session));
         private readonly ICluster _cluster;
         private int _disposed;
-
-        internal IInternalSession InternalRef
-        {
-            get { throw new NotImplementedException(); }
-            set { }
-        }
 
         public int BinaryProtocolVersion => 4;
 

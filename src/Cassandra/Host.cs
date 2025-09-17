@@ -20,7 +20,6 @@ using System.Net;
 using System.Threading;
 using Cassandra.Connections;
 using Cassandra.Connections.Control;
-using Cassandra.SessionManagement;
 
 namespace Cassandra
 {
@@ -234,7 +233,7 @@ namespace Cassandra
         }
 
         /// <summary>
-        /// Testing purposes only. Use <see cref="IInternalCluster.RetrieveAndSetDistance"/> to retrieve distance in a safer way.
+        /// Testing purposes only.
         /// </summary>
         /// <returns></returns>
         internal HostDistance GetDistanceUnsafe()

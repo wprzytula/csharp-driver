@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
-using Cassandra.SessionManagement;
 
 namespace Cassandra
 {
@@ -158,7 +157,7 @@ namespace Cassandra
         /// </summary>
         private Host GetLocalHost()
         {
-            if (!(_cluster is IInternalCluster clusterImplementation))
+            if (!(_cluster is Cluster clusterImplementation))
             {
                 //fallback to use any of the hosts
                 return _cluster.AllHosts().FirstOrDefault(h => h.Datacenter != null);

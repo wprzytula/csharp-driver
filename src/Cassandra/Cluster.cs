@@ -29,13 +29,12 @@ using Cassandra.Connections;
 using Cassandra.Connections.Control;
 using Cassandra.Helpers;
 using Cassandra.Serialization;
-using Cassandra.SessionManagement;
 using Cassandra.Tasks;
 
 namespace Cassandra
 {
     /// <inheritdoc cref="ICluster" />
-    public class Cluster : ICluster, /* FIXME: Reimplement tests and remove this stub: */ IInternalCluster
+    public class Cluster : ICluster
     {
         private const string DefaultVersionString = "N/A";
         private const string DefaultProductString = "ScyllaDB C# Driver";
@@ -54,12 +53,6 @@ namespace Cassandra
         /// <inheritdoc />
         public event Action<Host> HostRemoved;
 #pragma warning restore CS0067
-
-        internal IInternalCluster InternalRef
-        {
-            get { throw new NotImplementedException(); }
-            set { }
-        }
 
         /// <summary>
         ///  Build a new cluster based on the provided initializer. <p> Note that for
@@ -300,49 +293,5 @@ namespace Cassandra
             Cluster.Logger.Info("Cluster #{0} [{1}] has been shut down.", GetHashCode(), Metadata.ClusterName);
             return;
         }
-
-        /* BEGIN TESTING-ONLY STUBS */
-        /* FIXME: Reimplement tests and remove these stubs */
-
-        bool IInternalCluster.AnyOpenConnections(Host host)
-        {
-            throw new NotImplementedException("STUB: reimplement tests and remove me");
-        }
-
-        /// <summary>
-        /// Gets the the prepared statements cache
-        /// </summary>
-        ConcurrentDictionary<byte[], PreparedStatement> IInternalCluster.PreparedQueries { get; }
-
-        IReadOnlyDictionary<IContactPoint, IEnumerable<IConnectionEndPoint>> IInternalCluster.GetResolvedEndpoints()
-        {
-            throw new NotImplementedException("STUB: reimplement tests and remove me");
-        }
-
-        /// <summary>
-        /// Helper method to retrieve the aggregate distance from all configured LoadBalancingPolicies and set it at Host level.
-        /// </summary>
-        HostDistance IInternalCluster.RetrieveAndSetDistance(Host host)
-        {
-            throw new NotImplementedException("STUB: reimplement tests and remove me");
-        }
-
-        /// <summary>
-        /// Retrieves currently connected sessions.
-        /// </summary>
-        IEnumerable<IInternalSession> IInternalCluster.GetConnectedSessions()
-        {
-            throw new NotImplementedException("STUB: reimplement tests and remove me");
-        }
-
-        /// <summary>
-        /// Remove session from connected sessions collection.
-        /// </summary>
-        void IInternalCluster.RemoveSession(IInternalSession session)
-        {
-            throw new NotImplementedException("STUB: reimplement tests and remove me");
-        }
-
-        /* END TESTING-ONLY STUBS */
     }
 }

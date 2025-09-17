@@ -22,7 +22,6 @@ using Cassandra.ExecutionProfiles;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Providers.Null;
 using Cassandra.Serialization;
-using Cassandra.SessionManagement;
 
 namespace Cassandra.Tests
 {

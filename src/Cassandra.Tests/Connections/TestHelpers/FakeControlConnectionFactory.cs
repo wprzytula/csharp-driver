@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using Cassandra.Connections;
 using Cassandra.Connections.Control;
 using Cassandra.Serialization;
-using Cassandra.SessionManagement;
 using Moq;
 
 namespace Cassandra.Tests.Connections.TestHelpers
