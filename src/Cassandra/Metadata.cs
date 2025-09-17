@@ -55,13 +55,7 @@ namespace Cassandra
         /// Gets the configuration associated with this instance.
         /// </summary>
         internal Configuration Configuration { get; private set; }
-
-        internal string Partitioner { get; set; }
-
-        internal Hosts Hosts { get; private set; }
-
-        internal IReadOnlyDictionary<IContactPoint, IEnumerable<IConnectionEndPoint>> ResolvedContactPoints => throw new NotImplementedException();
-
+        
         internal Metadata(Configuration configuration)
         {
             throw new NotImplementedException();
@@ -71,38 +65,7 @@ namespace Cassandra
         {
             throw new NotImplementedException();
         }
-
-        internal KeyspaceMetadata GetKeyspaceFromCache(string keyspace)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void SetResolvedContactPoints(IDictionary<IContactPoint, IEnumerable<IConnectionEndPoint>> resolvedContactPoints)
-        {
-            throw new NotImplementedException();
-        }
-
         public Host GetHost(IPEndPoint address)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Host AddHost(IPEndPoint address)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Host AddHost(IPEndPoint address, IContactPoint contactPoint)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void RemoveHost(IPEndPoint address)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void FireSchemaChangedEvent(SchemaChangedEventArgs.Kind what, string keyspace, string table, object sender = null)
         {
             throw new NotImplementedException();
         }
@@ -123,24 +86,6 @@ namespace Cassandra
 
         // for tests
         internal KeyValuePair<string, KeyspaceMetadata>[] KeyspacesSnapshot => throw new NotImplementedException();
-
-        internal Task RebuildTokenMapAsync(bool retry, bool fetchKeyspaces)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// this method should be called by the event debouncer
-        /// </summary>
-        internal bool RemoveKeyspaceFromTokenMap(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal Task<KeyspaceMetadata> UpdateTokenMapForKeyspace(string name)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <summary>
         /// Get the replicas for a given partition key and keyspace
@@ -199,11 +144,6 @@ namespace Cassandra
             throw new NotImplementedException();
         }
 
-        internal Task<TableMetadata> GetTableAsync(string keyspace, string tableName)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         ///  Returns the view metadata for the provided view name in the keyspace.
         /// </summary>
@@ -250,16 +190,6 @@ namespace Cassandra
         }
 
         /// <summary>
-        /// Gets the query trace.
-        /// </summary>
-        /// <param name="trace">The query trace that contains the id, which properties are going to be populated.</param>
-        /// <returns></returns>
-        internal Task<QueryTrace> GetQueryTraceAsync(QueryTrace trace)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Updates the keyspace and token information
         /// </summary>
         public bool RefreshSchema(string keyspace = null, string table = null)
@@ -286,42 +216,6 @@ namespace Cassandra
         }
 
         /// <summary>
-        /// this method should be called by the event debouncer
-        /// </summary>
-        internal bool RemoveKeyspace(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// this method should be called by the event debouncer
-        /// </summary>
-        internal Task<KeyspaceMetadata> RefreshSingleKeyspace(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void ClearTable(string keyspaceName, string tableName)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void ClearView(string keyspaceName, string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void ClearFunction(string keyspaceName, string functionName, string[] signature)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void ClearAggregate(string keyspaceName, string aggregateName, string[] signature)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Initiates a schema agreement check.
         /// <para/>
         /// Schema changes need to be propagated to all nodes in the cluster.
@@ -332,34 +226,6 @@ namespace Cassandra
         /// </summary>
         /// <returns>True if schema agreement was successful and false if it was not successful.</returns>
         public Task<bool> CheckSchemaAgreementAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Waits until that the schema version in all nodes is the same or the waiting time passed.
-        /// This method blocks the calling thread.
-        /// </summary>
-        internal Task<bool> WaitForSchemaAgreementAsync(IConnection connection)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Sets the Cassandra version in order to identify how to parse the metadata information
-        /// </summary>
-        /// <param name="version"></param>
-        internal void SetCassandraVersion(Version version)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal void SetProductTypeAsDbaas()
-        {
-            throw new NotImplementedException();
-        }
-
-        internal IEnumerable<IConnectionEndPoint> UpdateResolvedContactPoint(IContactPoint contactPoint, IEnumerable<IConnectionEndPoint> endpoints)
         {
             throw new NotImplementedException();
         }

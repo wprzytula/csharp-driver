@@ -232,7 +232,9 @@ namespace Cassandra
             // mark as disconnected, guaranteeing that it wont make metadata fetches triggered by a property get
             // ReSharper disable once InconsistentlySynchronizedField : Can be both async and sync, don't mind
             _isDisconnected = false;
-            return _metadata.GetQueryTraceAsync(this);
+            // FIXME
+            // return _metadata.GetQueryTraceAsync(this);
+            throw new NotImplementedException();
         }
 
         /// <summary>

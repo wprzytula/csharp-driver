@@ -25,7 +25,7 @@ namespace Cassandra.Connections
     /// <summary>
     /// Represents a remote EndPoint that can be used to open a connection to a specific Host or ContactPoint.
     /// In some scenarios, the socket IpEndPoint might be different from the IpEndPoint of the Host. For example, scenarios
-    /// where a proxy is between the host and the driver. This abstraction makes the implementation of <see cref="IConnection"/>
+    /// where a proxy is between the host and the driver. This abstraction makes the implementation of `IConnection`
     /// decoupled from the Host's IpEndPoint which can be obtained via DNS resolution or via system.peers queries.
     /// </summary>
     internal interface IConnectionEndPoint : IEquatable<IConnectionEndPoint>
