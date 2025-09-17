@@ -1,4 +1,3 @@
-using Cassandra.Connections.Control;
 using Cassandra.IntegrationTests.TestBase;
 using Cassandra.IntegrationTests.TestClusterManagement;
 using NUnit.Framework;

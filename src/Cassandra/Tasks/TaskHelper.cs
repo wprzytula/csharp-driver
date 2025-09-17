@@ -364,27 +364,6 @@ namespace Cassandra.Tasks
         }
 
         /// <summary>
-        /// Executes method after the provided delay
-        /// </summary>
-        public static Task<TOut> ScheduleExecution<TOut>(Func<TOut> method, HashedWheelTimer timer, int delay)
-        {
-            var tcs = new TaskCompletionSource<TOut>();
-            timer.NewTimeout(state =>
-            {
-                var tcsState = (TaskCompletionSource<TOut>)state;
-                try
-                {
-                    tcsState.SetResult(method());
-                }
-                catch (Exception ex)
-                {
-                    tcsState.SetException(ex);
-                }
-            }, tcs, delay);
-            return tcs.Task;
-        }
-
-        /// <summary>
         /// Designed for Tasks that were started but the result should not be awaited upon (fire and forget).
         /// </summary>
         public static void Forget(this Task task)

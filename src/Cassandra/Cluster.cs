@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 
 using Cassandra.Collections;
 using Cassandra.Connections;
-using Cassandra.Connections.Control;
 using Cassandra.Helpers;
 using Cassandra.Serialization;
 using Cassandra.Tasks;
@@ -146,7 +145,8 @@ namespace Cassandra
                 protocolVersion = Configuration.ProtocolOptions.MaxProtocolVersionValue.Value;
             }
 
-            var parsedContactPoints = configuration.ContactPointParser.ParseContactPoints(contactPoints);
+            // FIXME:
+            // var parsedContactPoints = configuration.ContactPointParser.ParseContactPoints(contactPoints);
         }
 
         /// <inheritdoc />
@@ -276,14 +276,14 @@ namespace Cassandra
                 throw;
             }
             _metadata.ShutDown(timeoutMs);
-            Configuration.Timer.Dispose();
 
             // Dispose policies
             var speculativeExecutionPolicies = new HashSet<ISpeculativeExecutionPolicy>(new ReferenceEqualityComparer<ISpeculativeExecutionPolicy>());
-            foreach (var options in Configuration.RequestOptions.Values)
-            {
-                speculativeExecutionPolicies.Add(options.SpeculativeExecutionPolicy);
-            }
+            // FIXME:
+            // foreach (var options in Configuration.RequestOptions.Values)
+            // {
+            //     speculativeExecutionPolicies.Add(options.SpeculativeExecutionPolicy);
+            // }
 
             foreach (var sep in speculativeExecutionPolicies)
             {

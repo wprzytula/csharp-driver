@@ -19,15 +19,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Cassandra.Connections;
-using Cassandra.Connections.Control;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Helpers;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Abstractions;
-using Cassandra.Metrics.Providers.Null;
 using Cassandra.Serialization;
 using Cassandra.Tasks;
-
 
 namespace Cassandra
 {
@@ -100,26 +97,11 @@ namespace Cassandra
         public bool KeepContactPointsUnresolved { get; }
 
         /// <summary>
-        /// Shared reusable timer
-        /// </summary>
-        internal HashedWheelTimer Timer { get; private set; }
-
-        /// <summary>
         /// Gets or sets the list of <see cref="TypeSerializer{T}"/> defined.
         /// </summary>
         internal IEnumerable<ITypeSerializer> TypeSerializers { get; set; }
 
         internal MetadataSyncOptions MetadataSyncOptions { get; }
-
-        internal IRequestOptionsMapper RequestOptionsMapper { get; }
-
-        internal IEndPointResolver EndPointResolver { get; }
-
-        internal IDnsResolver DnsResolver { get; }
-
-        internal IDriverMetricsProvider MetricsProvider { get; }
-
-        internal DriverMetricsOptions MetricsOptions { get; }
 
         internal string SessionName { get; }
 
@@ -169,11 +151,6 @@ namespace Cassandra
 
         internal IRequestOptions DefaultRequestOptions => RequestOptions[Configuration.DefaultExecutionProfileName];
 
-
-        internal IContactPointParser ContactPointParser { get; }
-
-        internal IServerNameResolver ServerNameResolver { get; }
-
         internal Configuration() :
             this(Policies.DefaultPolicies,
                  new ProtocolOptions(),
@@ -184,8 +161,6 @@ namespace Cassandra
                  new QueryOptions(),
                  new DefaultAddressTranslator(),
                  new Dictionary<string, IExecutionProfile>(),
-                 null,
-                 null,
                  null,
                  null,
                  null,
@@ -215,7 +190,6 @@ namespace Cassandra
                                IAddressTranslator addressTranslator,
                                IReadOnlyDictionary<string, IExecutionProfile> executionProfiles,
                                MetadataSyncOptions metadataSyncOptions,
-                               IEndPointResolver endPointResolver,
                                IDriverMetricsProvider driverMetricsProvider,
                                DriverMetricsOptions metricsOptions,
                                string sessionName,
@@ -226,10 +200,6 @@ namespace Cassandra
                                TypeSerializerDefinitions typeSerializerDefinitions,
                                bool? keepContactPointsUnresolved,
                                bool? allowBetaProtocolVersions,
-                               IRequestOptionsMapper requestOptionsMapper = null,
-                               IContactPointParser contactPointParser = null,
-                               IServerNameResolver serverNameResolver = null,
-                               IDnsResolver dnsResolver = null,
                                IRequestTracker requestTracker = null)
         {
             AddressTranslator = addressTranslator ?? throw new ArgumentNullException(nameof(addressTranslator));
@@ -246,65 +216,19 @@ namespace Cassandra
             SocketOptions = socketOptions;
             ClientOptions = clientOptions;
             AuthProvider = authProvider;
-            RequestOptionsMapper = requestOptionsMapper ?? new RequestOptionsMapper();
             MetadataSyncOptions = metadataSyncOptions?.Clone() ?? new MetadataSyncOptions();
-            DnsResolver = dnsResolver ?? null; // FIXME
 
-            MetricsOptions = metricsOptions ?? new DriverMetricsOptions();
-            MetricsProvider = driverMetricsProvider ?? new NullDriverMetricsProvider();
             SessionName = sessionName;
             MetricsEnabled = driverMetricsProvider != null;
             TypeSerializers = typeSerializerDefinitions?.Definitions;
             KeepContactPointsUnresolved = keepContactPointsUnresolved ?? false;
             AllowBetaProtocolVersions = allowBetaProtocolVersions ?? false;
 
-            RequestOptions = RequestOptionsMapper.BuildRequestOptionsDictionary(executionProfiles, policies, socketOptions, clientOptions, queryOptions);
-            ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);
+            // FIXME
+            // ExecutionProfiles = BuildExecutionProfilesDictionary(executionProfiles, RequestOptions);
+            ExecutionProfiles = null;
 
             MonitorReportingOptions = monitorReportingOptions ?? new MonitorReportingOptions();
-            ServerNameResolver = serverNameResolver ?? null; // FIXME
-            EndPointResolver = endPointResolver ?? null; // FIXME
-            ContactPointParser = contactPointParser ?? new ContactPointParser(DnsResolver, ProtocolOptions, ServerNameResolver, KeepContactPointsUnresolved);
-
-            // Create the buffer pool with 16KB for small buffers and 256Kb for large buffers.
-            // The pool does not eagerly reserve the buffers, so it doesn't take unnecessary memory
-            // to create the instance.
-            Timer = new HashedWheelTimer();
-        }
-
-        /// <summary>
-        /// Clones (shallow) the provided execution profile dictionary and add the default profile if not there yet.
-        /// </summary>
-        private IReadOnlyDictionary<string, IExecutionProfile> BuildExecutionProfilesDictionary(
-            IReadOnlyDictionary<string, IExecutionProfile> executionProfiles,
-            IReadOnlyDictionary<string, IRequestOptions> requestOptions)
-        {
-            var executionProfilesDictionary = executionProfiles.ToDictionary(profileKvp => profileKvp.Key, profileKvp => profileKvp.Value);
-            var defaultOptions = requestOptions[Configuration.DefaultExecutionProfileName];
-            executionProfilesDictionary[Configuration.DefaultExecutionProfileName] = new ExecutionProfile(defaultOptions);
-            return executionProfilesDictionary;
-        }
-
-        /// <summary>
-        /// Gets the pooling options. If not specified, creates a new instance with the default by protocol version.
-        /// This instance is not stored.
-        /// </summary>
-        internal PoolingOptions GetOrCreatePoolingOptions(ProtocolVersion protocolVersion)
-        {
-            return PoolingOptions ?? PoolingOptions.Create(protocolVersion);
-        }
-
-        internal int? GetHeartBeatInterval()
-        {
-            return PoolingOptions != null ? PoolingOptions.GetHeartBeatInterval() : PoolingOptions.Create().GetHeartBeatInterval();
-        }
-
-        /// <summary>
-        /// Sets the default consistency level.
-        /// </summary>
-        internal void SetDefaultConsistencyLevel(ConsistencyLevel consistencyLevel)
-        {
-            QueryOptions.SetDefaultConsistencyLevel(consistencyLevel);
         }
     }
 }

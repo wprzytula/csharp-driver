@@ -22,7 +22,6 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Cassandra.Connections;
-using Cassandra.Connections.Control;
 using Cassandra.ExecutionProfiles;
 using Cassandra.Metrics;
 using Cassandra.Metrics.Abstractions;
@@ -66,7 +65,6 @@ namespace Cassandra
         private int _maxSchemaAgreementWaitSeconds = ProtocolOptions.DefaultMaxSchemaAgreementWaitSeconds;
         private IReadOnlyDictionary<string, IExecutionProfile> _profiles = new Dictionary<string, IExecutionProfile>();
         private MetadataSyncOptions _metadataSyncOptions;
-        private IEndPointResolver _endPointResolver;
         private IDriverMetricsProvider _driverMetricsProvider;
         private IRequestTracker _requestTracker;
         private DriverMetricsOptions _metricsOptions;
@@ -173,7 +171,6 @@ namespace Cassandra
                 _addressTranslator,
                 _profiles,
                 _metadataSyncOptions,
-                _endPointResolver,
                 _driverMetricsProvider,
                 _metricsOptions,
                 _sessionName,
@@ -870,12 +867,6 @@ namespace Cassandra
             }
 
             _typeSerializerDefinitions = definitions ?? throw new ArgumentNullException(nameof(definitions));
-            return this;
-        }
-
-        internal Builder WithEndPointResolver(IEndPointResolver endPointResolver)
-        {
-            _endPointResolver = endPointResolver ?? throw new ArgumentNullException(nameof(endPointResolver));
             return this;
         }
 
